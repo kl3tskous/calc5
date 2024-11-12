@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Stop-Loss Calculator</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/lightweight-charts@3.5.0/dist/lightweight-charts.standalone.production.js"></script>
+    <!-- Load Lightweight Charts Library -->
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Crypto Stop-Loss Calculator</h1>
-
+        
         <!-- Cryptocurrency Selection -->
         <div class="crypto-selection">
             <button onclick="selectCrypto('bitcoin', 'BTC')">BTC</button>
@@ -18,15 +19,13 @@
             <button onclick="selectCrypto('solana', 'SOL')">SOL</button>
         </div>
 
-        <!-- Chart Container -->
+        <!-- Chart Container for TradingView Lightweight Chart -->
         <div id="chart-container">
             <div id="chart"></div>
         </div>
 
         <!-- Entry Price Display -->
-        <div id="entry-price-container">
-            <span id="entry-price">Entry Price: --</span>
-        </div>
+        <div id="entry-price">Entry Price: --</div>
         <label><input type="checkbox" id="useCustomEntryPrice" onclick="toggleCustomEntryPrice()"> Use Custom Entry Price</label>
         <input type="number" id="customEntryPrice" placeholder="Enter custom entry price" style="display:none;">
 
@@ -44,6 +43,7 @@
             <label for="leverage">Leverage:</label>
             <input type="number" id="leverage" placeholder="Enter leverage">
 
+            <!-- Position Type Dropdown -->
             <label for="position-type">Position Type:</label>
             <select id="position-type">
                 <option value="long">Long</option>
