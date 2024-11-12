@@ -93,6 +93,22 @@ function calculateStopLoss() {
     return;
   }
 
+  // Calculate the dollar amount the user is willing to lose (risk amount)
+  const riskAmount = portfolioSize * (riskPercentage / 100);
+
+  // Calculate stop-loss price based on risk amount and leverage
+  if (positionType === "long") {
+    stopLossPrice = entryPrice - (riskAmount / (tradeAmount * leverage));
+  } else if (positionType === "short") {
+    stopLossPrice = entryPrice + (riskAmount / (tradeAmount * leverage));
+  }
+
+  // Display the stop-loss price
+  document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
+  updateStopLossLine(stopLossPrice);
+}
+
+
   const riskAmount = portfolioSize * (riskPercentage / 100);
 
   if (positionType === "long") {
