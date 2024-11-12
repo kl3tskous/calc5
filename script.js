@@ -1,6 +1,7 @@
 let entryPrice = 0;
 let chart, candleSeries, stopLossLineSeries;
 
+// Function to select a cryptocurrency and fetch live price
 async function selectCrypto(cryptoId, symbol) {
     const entryPriceField = document.getElementById("entry-price");
     entryPriceField.innerText = "Fetching...";
@@ -28,6 +29,7 @@ async function selectCrypto(cryptoId, symbol) {
     }
 }
 
+// Function to toggle custom entry price input
 function toggleCustomEntryPrice() {
     const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
     const customEntryInput = document.getElementById("customEntryPrice");
@@ -42,6 +44,7 @@ function toggleCustomEntryPrice() {
     }
 }
 
+// Function to load the candlestick chart
 async function loadCandlestickChart(symbol) {
     try {
         const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}USDT&interval=15m&limit=50`);
@@ -74,6 +77,7 @@ async function loadCandlestickChart(symbol) {
     }
 }
 
+// Function to calculate stop-loss price for isolated margin mode
 function calculateStopLoss() {
     const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
     const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
@@ -84,28 +88,27 @@ function calculateStopLoss() {
     const riskPercentage = parseFloat(document.getElementById("risk-percentage")?.value) / 100;
     const leverage = parseFloat(document.getElementById("leverage")?.value);
 
-    // Log values to ensure elements are being fetched correctly
-    console.log({
-        effectiveEntryPrice,
-        tradeAmount,
-        portfolioSize,
-        riskPercentage,
-        leverage
-    });
-
     if (isNaN(effectiveEntryPrice) || isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage)) {
         alert("Please fill in all fields correctly.");
         return;
     }
 
-    const isolatedMargin = tradeAmount / leverage;
+    // Step 1: Calculate dollar risk based on portfolio size and risk percentage
     const dollarRisk = portfolioSize * riskPercentage;
+
+    // Step 2: Calculate isolated margin required for the position based on leverage
+    const isolatedMargin = tradeAmount / leverage;
+
+    // Step 3: Calculate stop-loss distance based on isolated margin and dollar risk
+    // Higher leverage should reduce the margin, thus bringing the stop-loss closer
     const stopLossPrice = effectiveEntryPrice - (dollarRisk / isolatedMargin);
 
+    // Display the stop-loss price
     document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
     updateStopLossLine(stopLossPrice);
 }
 
+// Function to update stop-loss line on the chart
 function updateStopLossLine(stopLossPrice) {
     if (chart && candleSeries) {
         if (stopLossLineSeries) {
@@ -125,6 +128,7 @@ function updateStopLossLine(stopLossPrice) {
     }
 }
 
+// Ensure the chart resizes properly on window resize
 window.addEventListener("resize", () => {
     if (chart) {
         chart.resize(document.getElementById("chart-container").offsetWidth, 200);
