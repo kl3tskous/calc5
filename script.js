@@ -1,78 +1,65 @@
-let entryPrice = 0;
-let selectedCrypto = 'BTC';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Stop-Loss Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Include Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Crypto Stop-Loss Calculator</h1>
 
-async function selectCrypto(crypto) {
-  selectedCrypto = crypto;
-  await fetchPrice();
-}
+    <!-- Cryptocurrency Selection -->
+    <div class="crypto-selection">
+      <button onclick="selectCrypto('bitcoin')">BTC</button>
+      <button onclick="selectCrypto('ethereum')">ETH</button>
+      <button onclick="selectCrypto('solana')">SOL</button>
+    </div>
 
-async function fetchPrice() {
-  try {
-    const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${selectedCrypto.toLowerCase()}&vs_currencies=usd`);
-    const data = await response.json();
-    entryPrice = data[selectedCrypto.toLowerCase()].usd;
-    document.getElementById("entry-price").innerText = `Entry Price: $${entryPrice}`;
-  } catch (error) {
-    alert("Error fetching price. Please try again.");
-  }
-}
+    <!-- Entry Price Display -->
+    <div id="entry-price">Entry Price: --</div>
 
-function calculateStopLoss() {
-  const tradeAmount = parseFloat(document.getElementById("tradeAmount").value);
-  const portfolioSize = parseFloat(document.getElementById("portfolioSize").value);
-  const riskPercentage = parseFloat(document.getElementById("riskPercentage").value);
-  const leverage = parseFloat(document.getElementById("leverage").value);
-  const positionType = document.getElementById("positionType").value;
+    <!-- Stop-Loss Calculator Form -->
+    <div class="calculator-form">
+      <label>
+        Amount in Trade (USD):
+        <input type="number" id="tradeAmount" placeholder="Enter trade amount">
+      </label>
+      <label>
+        Portfolio Size (USD):
+        <input type="number" id="portfolioSize" placeholder="Enter portfolio size">
+      </label>
+      <label>
+        Risk Percentage (%):
+        <input type="number" id="riskPercentage" placeholder="Enter risk percentage">
+      </label>
+      <label>
+        Leverage:
+        <input type="number" id="leverage" placeholder="Enter leverage (e.g., 1)">
+      </label>
+      <label>
+        Position Type:
+        <select id="positionType">
+          <option value="long">Long</option>
+          <option value="short">Short</option>
+        </select>
+      </label>
+      <button onclick="calculateStopLoss()">Calculate Stop-Loss</button>
+    </div>
 
-  if (isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage) || !entryPrice) {
-    alert("Please fill in all fields correctly.");
-    return;
-  }
+    <!-- Stop-Loss Price Display -->
+    <div id="stop-loss-result">Stop-Loss Price: --</div>
 
-  const riskAmount = portfolioSize * (riskPercentage / 100);
-  let stopLossPrice = entryPrice - (riskAmount / (tradeAmount * leverage));
+    <!-- Candlestick Chart -->
+    <div id="chart-container">
+      <!-- Chart will be rendered here -->
+      <canvas id="chart"></canvas>
+    </div>
+  </div>
 
-  if (positionType === "short") {
-    stopLossPrice = entryPrice + (riskAmount / (tradeAmount * leverage));
-  }
-
-  document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
-  updateChartWithStopLoss(stopLossPrice);
-}
-
-async function loadChart() {
-  const ctx = document.getElementById("chart").getContext("2d");
-  const data = {
-    datasets: [
-      {
-        label: `${selectedCrypto} Price`,
-        data: [],
-        borderColor: "#58a6ff",
-      }
-    ]
-  };
-
-  window.myChart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-      responsive: true,
-      scales: {
-        x: {
-          type: 'time',
-          time: {
-            unit: 'minute'
-          }
-        }
-      }
-    }
-  });
-}
-
-function updateChartWithStopLoss(stopLossPrice) {
-  if (window.myChart) {
-    // Add stop-loss line to the chart
-  }
-}
-
-document.addEventListener("DOMContentLoaded", loadChart);
+  <script src="script.js"></script>
+</body>
+</html>
