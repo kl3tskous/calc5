@@ -1,3 +1,4 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #1a1a2e;
@@ -7,10 +8,12 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
+    padding: 0 10px;
 }
 
+/* Main Container */
 .container {
-    width: 90%;
+    width: 100%;
     max-width: 400px;
     background-color: #0d0e13;
     padding: 20px;
@@ -24,6 +27,15 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* Description Text */
+.description {
+    font-size: 14px;
+    color: #a1a1a1;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* Cryptocurrency Selection Buttons */
 .crypto-selection button {
     background-color: #393e46;
     color: #e0e0e0;
@@ -32,23 +44,65 @@ h1 {
     margin: 5px;
     border-radius: 5px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.crypto-selection button img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
 }
 
 .crypto-selection button:hover {
     background-color: #58a6ff;
 }
 
-#chart-container {
-    margin: 20px 0;
+/* Entry Price and Refresh Button */
+#entry-price-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
 }
 
-.calculator-form label, .calculator-form input, .calculator-form select {
+#entry-price {
+    font-size: 18px;
+    margin-right: 5px;
+}
+
+#refresh-price {
+    background: none;
+    border: none;
+    color: #58a6ff;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+#refresh-price:hover {
+    color: #39d353;
+}
+
+/* Chart Container */
+#chart-container {
+    margin: 20px 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Form Labels and Inputs */
+.calculator-form label,
+.calculator-form input,
+.calculator-form select {
     display: block;
     width: 100%;
     margin-bottom: 10px;
 }
 
-.calculator-form input, .calculator-form select {
+.calculator-form input,
+.calculator-form select {
     padding: 8px;
     background-color: #1f2235;
     color: #e0e0e0;
@@ -56,6 +110,7 @@ h1 {
     border-radius: 5px;
 }
 
+/* Calculate Button */
 button {
     background-color: #39d353;
     color: white;
