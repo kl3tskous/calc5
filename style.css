@@ -1,0 +1,95 @@
+/* General reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Dark theme */
+body {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Title styling */
+h1 {
+  color: #58a6ff;
+  margin-bottom: 20px;
+}
+
+/* Cryptocurrency selection buttons */
+.crypto-selection button {
+  background-color: #2a2a2a;
+  color: #39d353;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.crypto-selection button:hover {
+  background-color: #3a3a3a;
+}
+
+/* Entry price display */
+#entry-price {
+  margin-top: 15px;
+  font-size: 1.2em;
+  color: #58a6ff;
+}
+
+/* Form styling */
+.calculator-form {
+  margin-top: 20px;
+  color: #e0e0e0;
+}
+
+.calculator-form label {
+  display: block;
+  margin: 10px 0;
+}
+
+.calculator-form input,
+.calculator-form select {
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  width: 100%;
+  margin-top: 5px;
+  color: #000;
+}
+
+.calculator-form button {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #39d353;
+  border: none;
+  border-radius: 5px;
+  color: #121212;
+  cursor: pointer;
+}
+
+.calculator-form button:hover {
+  background-color: #58a6ff;
+}
+
+/* Stop-loss result display */
+#stop-loss-result {
+  margin-top: 20px;
+  font-size: 1.2em;
+  color: #39d353;
+}
+
+/* Chart container */
+#chart-container {
+  margin-top: 30px;
+}
