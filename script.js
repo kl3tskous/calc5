@@ -69,7 +69,7 @@ async function loadCandlestickChart() {
     if (!chart) {
       chart = LightweightCharts.createChart(document.getElementById("chart"), {
         width: 600,
-        height: 250, // Smaller chart height
+        height: 250, // Adjusted chart size for better fit
         layout: { backgroundColor: '#0d0e13', textColor: '#e0e0e0' },
         grid: { vertLines: { color: '#2a2a2a' }, horzLines: { color: '#2a2a2a' } },
         timeScale: { timeVisible: true, borderColor: '#2a2a2a' },
@@ -85,7 +85,6 @@ async function loadCandlestickChart() {
   }
 }
 
-function calculateStopLoss() {
 function calculateStopLoss() {
   // Check if the user has enabled the custom entry price
   const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
@@ -120,11 +119,6 @@ function calculateStopLoss() {
   }
 
   // Display the calculated stop-loss price
-  document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
-  updateStopLossLine(stopLossPrice);
-}
-
-
   document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
   updateStopLossLine(stopLossPrice);
 }
