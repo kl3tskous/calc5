@@ -86,23 +86,44 @@ async function loadCandlestickChart() {
 }
 
 function calculateStopLoss() {
-  // Variables:
-const tradeAmount = parseFloat(document.getElementById("tradeAmount").value);
-const portfolioSize = parseFloat(document.getElementById("portfolioSize").value);
-const riskPercentage = parseFloat(document.getElementById("riskPercentage").value);
-const leverage = parseFloat(document.getElementById("leverage").value);
-const effectiveEntryPrice = useCustomEntry ? customEntryPrice : entryPrice;
+function calculateStopLoss() {
+  // Check if the user has enabled the custom entry price
+  const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
+  const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
 
-// Calculation
-const riskAmount = portfolioSize * (riskPercentage / 100); // Total dollar risk
-const positionSize = tradeAmount / effectiveEntryPrice;
-const initialMargin = (positionSize * effectiveEntryPrice) / leverage;
+  // Get input values
+  const tradeAmount = parseFloat(document.getElementById("tradeAmount").value);
+  const tradeAmountType = document.getElementById("tradeAmountType").value;
+  const portfolioSize = parseFloat(document.getElementById("portfolioSize").value);
+  const riskPercentage = parseFloat(document.getElementById("riskPercentage").value);
+  const leverage = parseFloat(document.getElementById("leverage").value);
+  const positionType = document.getElementById("positionType").value;
 
-if (positionType === "long") {
+  // Use custom entry price if enabled; otherwise, use the fetched entry price
+  const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
+
+  if (isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage) || isNaN(effectiveEntryPrice)) {
+    alert("Please fill in all fields correctly.");
+    return;
+  }
+
+  // Calculate position size and risk-adjusted stop-loss
+  const positionSize = tradeAmountType === "usd" ? tradeAmount / effectiveEntryPrice : tradeAmount;
+  const initialMargin = (positionSize * effectiveEntryPrice) / leverage;
+  const riskAmount = portfolioSize * (riskPercentage / 100);
+
+  // Calculate stop-loss price based on position type
+  if (positionType === "long") {
     stopLossPrice = effectiveEntryPrice - (riskAmount / initialMargin);
-} else if (positionType === "short") {
+  } else if (positionType === "short") {
     stopLossPrice = effectiveEntryPrice + (riskAmount / initialMargin);
+  }
+
+  // Display the calculated stop-loss price
+  document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
+  updateStopLossLine(stopLossPrice);
 }
+
 
   document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
   updateStopLossLine(stopLossPrice);
