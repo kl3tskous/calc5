@@ -3,14 +3,12 @@ let selectedCrypto = 'BTCUSDT';
 let stopLossPrice = 0;
 let chart, candleSeries;
 
-// Load chart data on initialization
 async function selectCrypto(crypto) {
   selectedCrypto = crypto + 'USDT';
   await fetchPrice();
   await loadCandlestickChart();
 }
 
-// Fetch the current price of the selected cryptocurrency
 async function fetchPrice() {
   const cryptoIdMap = {
     'BTCUSDT': 'bitcoin',
@@ -41,7 +39,6 @@ async function fetchPrice() {
   }
 }
 
-// Fetch 15-minute interval candlestick data from Binance API and update chart
 async function loadCandlestickChart() {
   try {
     const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${selectedCrypto}&interval=15m&limit=50`);
@@ -74,7 +71,6 @@ async function loadCandlestickChart() {
   }
 }
 
-// Calculate stop-loss with MEXC fees
 function calculateStopLoss() {
   const tradeAmount = parseFloat(document.getElementById("tradeAmount").value);
   const portfolioSize = parseFloat(document.getElementById("portfolioSize").value);
@@ -87,7 +83,7 @@ function calculateStopLoss() {
     return;
   }
 
-  const feeRate = 0.00075; // Example taker fee rate (0.075%) for MEXC
+  const feeRate = 0.00075;
   const riskAmount = portfolioSize * (riskPercentage / 100);
   const adjustedRiskAmount = riskAmount - 2 * (tradeAmount * feeRate);
 
