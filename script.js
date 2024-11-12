@@ -108,20 +108,30 @@ function calculateStopLoss() {
 // Update chart to display a stop-loss line
 function updateStopLossLine(stopLossPrice) {
   if (candleSeries && chart) {
+    // Clear existing series and add the main candle series again
     chart.removeSeries(candleSeries);
     candleSeries = chart.addCandlestickSeries();
+    
+    // Reapply the data (to ensure line updates)
+    loadCandlestickChart();
+
+    // Add a horizontal line at the stop-loss price
     candleSeries.applyOptions({
       priceLineVisible: true,
       priceLineColor: 'red',
       priceLineWidth: 2,
       priceLineVisible: true,
+      priceLineSource: LightweightCharts.PriceLineSource.LastBar,
+      priceLineWidth: 2,
     });
+    
+    // Add a stop-loss marker
     candleSeries.setMarkers([
       {
-        time: chart.timeScale().getVisibleRange().from,
+        price: stopLossPrice,
         position: 'belowBar',
         color: 'red',
-        shape: 'arrowUp',
+        shape: 'arrowDown',
         text: `Stop-Loss $${stopLossPrice.toFixed(2)}`,
       },
     ]);
