@@ -5,16 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crypto Stop-Loss Calculator</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Include Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Include Chart.js Annotation Plugin for adding lines -->
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.0"></script>
-  <!-- Include Chart.js Financial Chart Plugin for Candlestick Charts -->
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@3.3.0/dist/chartjs-chart-financial.min.js"></script>
-  <!-- Include Moment.js for date handling -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <!-- Include Moment.js date adapter for Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+  <!-- Include TradingView Lightweight Charts Library -->
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
   <div class="container">
@@ -61,15 +53,12 @@
     <!-- Stop-Loss Price Display -->
     <div id="stop-loss-result">Stop-Loss Price: --</div>
 
-    <!-- Candlestick Chart -->
+    <!-- Chart Container for TradingView Lightweight Chart -->
     <div id="chart-container">
-      <canvas id="chart"></canvas>
+      <div id="chart" style="width: 800px; height: 400px;"></div>
     </div>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-<!-- Include TradingView Lightweight Charts Library -->
-<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-
