@@ -94,34 +94,21 @@ function calculateStopLoss() {
         return;
     }
 
-    // Step 1: Calculate dollar risk based on portfolio size and risk percentage
     const dollarRisk = portfolioSize * riskPercentage;
-
-    // Step 2: Calculate the price movement required to reach the dollar risk, accounting for leverage
     const priceMovement = (dollarRisk / (tradeAmount / effectiveEntryPrice)) / leverage;
+    const stopLossPrice = (position === "long") ? effectiveEntryPrice - priceMovement : effectiveEntryPrice + priceMovement;
 
-    // Step 3: Adjust the stop-loss based on position type (closer for higher leverage)
-    const stopLossPrice = (position === "long") 
-        ? effectiveEntryPrice - priceMovement 
-        : effectiveEntryPrice + priceMovement;
-
-    // Display the stop-loss price
     document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
     updateStopLossLine(stopLossPrice);
 }
 
-// Function to update stop-loss line on the chart
 function updateStopLossLine(stopLossPrice) {
     if (chart && candleSeries) {
         if (stopLossLineSeries) {
             chart.removeSeries(stopLossLineSeries);
         }
 
-        stopLossLineSeries = chart.addLineSeries({
-            color: 'red',
-            lineWidth: 2,
-        });
-
+        stopLossLineSeries = chart.addLineSeries({ color: 'red', lineWidth: 2 });
         const visibleRange = chart.timeScale().getVisibleRange();
         stopLossLineSeries.setData([
             { time: visibleRange.from, value: stopLossPrice },
@@ -130,7 +117,6 @@ function updateStopLossLine(stopLossPrice) {
     }
 }
 
-// Ensure the chart resizes properly on window resize
 window.addEventListener("resize", () => {
     if (chart) {
         chart.resize(document.getElementById("chart-container").offsetWidth, 200);
