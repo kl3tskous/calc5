@@ -6,7 +6,7 @@
 }
 
 body {
-  background-color: #0d0e13;
+  background: linear-gradient(135deg, #5d4bf4, #9a48ea);
   color: #e0e0e0;
   display: flex;
   justify-content: center;
@@ -18,19 +18,19 @@ body {
   max-width: 800px;
   padding: 20px;
   text-align: center;
-  border-radius: 10px;
-  background-color: #1a1c23;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  background-color: rgba(17, 17, 24, 0.9);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
 }
 
 h1 {
-  color: #58a6ff;
+  color: #ffffff;
   margin-bottom: 20px;
 }
 
 .crypto-selection button {
-  background-color: #2a2d3e;
-  color: #39d353;
+  background-color: #6e56fa;
+  color: #ffffff;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
@@ -40,7 +40,7 @@ h1 {
 }
 
 .crypto-selection button:hover {
-  background-color: #3a3e52;
+  background-color: #8a6df0;
 }
 
 #entry-price {
@@ -60,6 +60,25 @@ h1 {
   text-align: left;
 }
 
+.input-group {
+  display: flex;
+}
+
+.input-group input,
+.input-group select {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #2a2d3e;
+  color: #fff;
+  width: 100%;
+}
+
+.input-group select {
+  max-width: 100px;
+  margin-left: 10px;
+}
+
 .calculator-form input,
 .calculator-form select {
   padding: 10px;
@@ -69,10 +88,6 @@ h1 {
   margin-top: 5px;
   background-color: #2a2d3e;
   color: #fff;
-}
-
-.calculator-form input::placeholder {
-  color: #b0b3b8;
 }
 
 .calculator-form button {
