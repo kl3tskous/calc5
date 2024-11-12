@@ -104,17 +104,4 @@ function updateStopLossLine(stopLossPrice) {
         const visibleRange = chart.timeScale().getVisibleRange();
         stopLossLineSeries.setData([
             { time: visibleRange.from, value: stopLossPrice },
-            { time: visibleRange.to, value: stopLossPrice }
-        ]);
-    }
-}
-
-// Function to refresh the entry price (re-fetch from the selected cryptocurrency)
-function refreshEntryPrice() {
-    const cryptoId = document.querySelector(".crypto-selection button.active")?.getAttribute("data-id");
-    if (cryptoId) {
-        selectCrypto(cryptoId);
-    } else {
-        alert("Please select a cryptocurrency first.");
-    }
-}
+            { time: visib
