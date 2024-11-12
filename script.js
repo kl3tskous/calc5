@@ -3,11 +3,6 @@ let chart, candleSeries, stopLossLineSeries;
 
 // Function to select a cryptocurrency and fetch live price
 async function selectCrypto(cryptoId, symbol) {
-    fetchPrice(cryptoId);
-    loadCandlestickChart(symbol);
-}
-
-async function fetchPrice(cryptoId) {
     const entryPriceField = document.getElementById("entry-price");
     entryPriceField.innerText = "Fetching...";
 
@@ -24,6 +19,7 @@ async function fetchPrice(cryptoId) {
 
         if (entryPrice) {
             entryPriceField.innerText = `Entry Price: $${entryPrice.toFixed(2)} USD`;
+            loadCandlestickChart(symbol);
         } else {
             entryPriceField.innerText = "Price not available";
         }
@@ -37,10 +33,10 @@ async function fetchPrice(cryptoId) {
 function refreshEntryPrice() {
     const cryptoId = document.querySelector(".crypto-selection button.active")?.getAttribute("data-id");
     if (cryptoId) {
-        fetchPrice(cryptoId);
+        selectCrypto(cryptoId);
     } else {
         alert("Please select a cryptocurrency first.");
     }
 }
 
-// Other existing functions remain unchanged (calculateStopLoss, loadCandlestickChart, etc.)
+// Other functions (calculateStopLoss, loadCandlestickChart, toggleCustomEntryPrice) remain the same
