@@ -1,160 +1,71 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
 body {
-  background: linear-gradient(135deg, #5d4bf4, #9a48ea);
-  color: #e0e0e0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
 }
 
 .container {
-  max-width: 700px;
-  padding: 15px;
-  text-align: center;
-  border-radius: 10px;
-  background-color: rgba(17, 17, 24, 0.9);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-  width: 95%;
+    width: 90%;
+    max-width: 400px;
+    background-color: #0d0e13;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
 h1 {
-  color: #ffffff;
-  font-size: 1.5em;
-  margin-bottom: 10px;
+    color: #58a6ff;
+    margin-bottom: 20px;
 }
 
 .crypto-selection button {
-  background-color: #6e56fa;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  padding: 8px 15px;
-  cursor: pointer;
-  margin: 3px;
-  font-size: 0.9em;
-  transition: background 0.3s ease;
+    background-color: #393e46;
+    color: #e0e0e0;
+    border: none;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .crypto-selection button:hover {
-  background-color: #8a6df0;
-}
-
-#entry-price {
-  margin-top: 10px;
-  font-size: 1em;
-  color: #58a6ff;
-}
-
-.calculator-form {
-  margin-top: 10px;
-  color: #e0e0e0;
-  font-size: 0.9em;
-}
-
-.calculator-form label {
-  display: block;
-  margin: 6px 0;
-  text-align: left;
-}
-
-.calculator-form input {
-  padding: 8px;
-  border-radius: 5px;
-  border: none;
-  width: 100%;
-  margin-top: 5px;
-  background-color: #2a2d3e;
-  color: #fff;
-  font-size: 0.9em;
-}
-
-.calculator-form button {
-  margin-top: 10px;
-  padding: 8px;
-  font-size: 0.9em;
-  background-color: #39d353;
-  border: none;
-  border-radius: 5px;
-  color: #0d0e13;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.calculator-form button:hover {
-  background-color: #58a6ff;
-}
-
-#stop-loss-result {
-  margin-top: 10px;
-  font-size: 1em;
-  color: #39d353;
+    background-color: #58a6ff;
 }
 
 #chart-container {
-  margin-top: 10px;
-  border-radius: 10px;
-  overflow: hidden;
-  width: 100%;
+    margin: 20px 0;
 }
 
-#chart {
-  width: 100%;
-  height: 250px;
+.calculator-form label, .calculator-form input, .calculator-form select {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
 }
 
-#customEntryPrice {
-  display: none;
-  padding: 8px;
-  border-radius: 5px;
-  border: none;
-  background-color: #2a2d3e;
-  color: #fff;
-  margin-top: 5px;
-  width: 100%;
-  font-size: 0.9em;
+.calculator-form input, .calculator-form select {
+    padding: 8px;
+    background-color: #1f2235;
+    color: #e0e0e0;
+    border: 1px solid #393e46;
+    border-radius: 5px;
 }
 
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
-  .container {
+button {
+    background-color: #39d353;
+    color: white;
+    border: none;
     padding: 10px;
-  }
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
 
-  h1 {
-    font-size: 1.3em;
-  }
-
-  .crypto-selection button {
-    padding: 6px 10px;
-    font-size: 0.8em;
-  }
-
-  #chart {
-    height: 200px;
-  }
-
-  .calculator-form label {
-    margin: 4px 0;
-  }
-
-  .calculator-form input {
-    padding: 6px;
-    font-size: 0.8em;
-  }
-
-  .calculator-form button {
-    padding: 6px;
-    font-size: 0.8em;
-  }
-
-  #stop-loss-result {
-    font-size: 0.9em;
-  }
+button:hover {
+    background-color: #2b8f3e;
 }
