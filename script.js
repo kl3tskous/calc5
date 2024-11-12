@@ -99,11 +99,31 @@ function calculateStopLoss() {
 }
 
 function updateStopLossLine(stopLossPrice) {
-  if (candleSeries && chart) {
-    chart.removeSeries(candleSeries);
-    candleSeries = chart.addCandlestickSeries();
-    loadCandlestickChart();
-    candleSeries.setMarkers([{ price: stopLossPrice, color: 'red', shape: 'arrowDown', text: `Stop-Loss $${stopLossPrice.toFixed(2)}` }]);
+  if (chart && candleSeries) {
+    // Clear previous markers
+    candleSeries.setMarkers([]);
+
+    // Add a marker for the stop-loss price
+    candleSeries.setMarkers([
+      {
+        time: chart.timeScale().getVisibleRange().from, // Position at start of visible chart
+        price: stopLossPrice,
+        color: 'red',
+        shape: 'arrowDown',
+        text: `Stop-Loss: $${stopLossPrice.toFixed(2)}`
+      }
+    ]);
+
+    // Add a horizontal line overlay at the stop-loss price
+    const lineSeries = chart.addLineSeries({
+      color: 'red',
+      lineWidth: 2,
+    });
+
+    lineSeries.setData([
+      { time: chart.timeScale().getVisibleRange().from, value: stopLossPrice },
+      { time: chart.timeScale().getVisibleRange().to, value: stopLossPrice }
+    ]);
   }
 }
 
