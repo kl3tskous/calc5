@@ -48,7 +48,7 @@ async function loadCandlestickChart() {
     const data = await response.json();
     
     const candlestickData = data.map(candle => ({
-      time: candle[0] / 1000, // Convert from ms to seconds
+      time: candle[0] / 1000,
       open: parseFloat(candle[1]),
       high: parseFloat(candle[2]),
       low: parseFloat(candle[3]),
@@ -59,14 +59,8 @@ async function loadCandlestickChart() {
       chart = LightweightCharts.createChart(document.getElementById("chart"), {
         width: 800,
         height: 400,
-        layout: {
-          backgroundColor: '#121212',
-          textColor: '#e0e0e0',
-        },
-        grid: {
-          vertLines: { color: '#2a2a2a' },
-          horzLines: { color: '#2a2a2a' },
-        },
+        layout: { backgroundColor: '#0d0e13', textColor: '#e0e0e0' },
+        grid: { vertLines: { color: '#2a2a2a' }, horzLines: { color: '#2a2a2a' } },
         timeScale: { timeVisible: true, borderColor: '#2a2a2a' },
         priceScale: { borderColor: '#2a2a2a' },
       });
@@ -80,7 +74,7 @@ async function loadCandlestickChart() {
   }
 }
 
-// Calculate stop-loss based on the user's risk tolerance and leverage
+// Calculate stop-loss with MEXC fees
 function calculateStopLoss() {
   const tradeAmount = parseFloat(document.getElementById("tradeAmount").value);
   const portfolioSize = parseFloat(document.getElementById("portfolioSize").value);
@@ -93,75 +87,29 @@ function calculateStopLoss() {
     return;
   }
 
-  // Constants
   const feeRate = 0.00075; // Example taker fee rate (0.075%) for MEXC
-
-  // Calculate the dollar amount the user is willing to lose (risk amount)
   const riskAmount = portfolioSize * (riskPercentage / 100);
-
-  // Adjust the risk amount to account for MEXC trading fees
   const adjustedRiskAmount = riskAmount - 2 * (tradeAmount * feeRate);
 
-  // Calculate stop-loss price based on adjusted risk amount and leverage
   if (positionType === "long") {
     stopLossPrice = entryPrice - (adjustedRiskAmount / (tradeAmount * leverage));
   } else if (positionType === "short") {
     stopLossPrice = entryPrice + (adjustedRiskAmount / (tradeAmount * leverage));
   }
 
-  // Display the stop-loss price
   document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
   updateStopLossLine(stopLossPrice);
 }
 
-
-
-  const riskAmount = portfolioSize * (riskPercentage / 100);
-
-  if (positionType === "long") {
-    stopLossPrice = entryPrice - (riskAmount / (tradeAmount * leverage));
-  } else if (positionType === "short") {
-    stopLossPrice = entryPrice + (riskAmount / (tradeAmount * leverage));
-  }
-
-  document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
-  updateStopLossLine(stopLossPrice);
-}
-
-// Update chart to display a stop-loss line
 function updateStopLossLine(stopLossPrice) {
   if (candleSeries && chart) {
-    // Clear existing series and add the main candle series again
     chart.removeSeries(candleSeries);
     candleSeries = chart.addCandlestickSeries();
-    
-    // Reapply the data (to ensure line updates)
     loadCandlestickChart();
-
-    // Add a horizontal line at the stop-loss price
-    candleSeries.applyOptions({
-      priceLineVisible: true,
-      priceLineColor: 'red',
-      priceLineWidth: 2,
-      priceLineVisible: true,
-      priceLineSource: LightweightCharts.PriceLineSource.LastBar,
-      priceLineWidth: 2,
-    });
-    
-    // Add a stop-loss marker
-    candleSeries.setMarkers([
-      {
-        price: stopLossPrice,
-        position: 'belowBar',
-        color: 'red',
-        shape: 'arrowDown',
-        text: `Stop-Loss $${stopLossPrice.toFixed(2)}`,
-      },
-    ]);
+    candleSeries.setMarkers([{ price: stopLossPrice, color: 'red', shape: 'arrowDown', text: `Stop-Loss $${stopLossPrice.toFixed(2)}` }]);
   }
 }
 
-// Initialize chart and fetch initial data on page load
 document.addEventListener("DOMContentLoaded", () => {
   selectCrypto("BTC");
 });
