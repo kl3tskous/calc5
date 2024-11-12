@@ -76,4 +76,38 @@ function calculateStopLoss() {
   const tradeAmountType = document.getElementById("tradeAmountType").value;
   const portfolioSize = parseFloat(document.getElementById("portfolioSize").value);
   const riskPercentage = parseFloat(document.getElementById("riskPercentage").value);
-  const leverage = parseFloat
+  const leverage = parseFloat(document.getElementById("leverage").value);
+  const positionType = document.getElementById("positionType").value;
+
+  if (isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage) || !entryPrice) {
+    alert("Please fill in all fields correctly.");
+    return;
+  }
+
+  const positionSize = tradeAmountType === "usd" ? tradeAmount / entryPrice : tradeAmount;
+
+  const initialMargin = (positionSize * entryPrice) / leverage;
+  const riskAmount = portfolioSize * (riskPercentage / 100);
+
+  if (positionType === "long") {
+    stopLossPrice = entryPrice - (riskAmount / initialMargin);
+  } else if (positionType === "short") {
+    stopLossPrice = entryPrice + (riskAmount / initialMargin);
+  }
+
+  document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
+  updateStopLossLine(stopLossPrice);
+}
+
+function updateStopLossLine(stopLossPrice) {
+  if (candleSeries && chart) {
+    chart.removeSeries(candleSeries);
+    candleSeries = chart.addCandlestickSeries();
+    loadCandlestickChart();
+    candleSeries.setMarkers([{ price: stopLossPrice, color: 'red', shape: 'arrowDown', text: `Stop-Loss $${stopLossPrice.toFixed(2)}` }]);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  selectCrypto("BTC");
+});
