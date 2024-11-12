@@ -43,7 +43,6 @@ function toggleCustomEntryPrice() {
   const customEntryInput = document.getElementById("customEntryPrice");
   const entryPriceDisplay = document.getElementById("entry-price");
 
-  // Toggle visibility based on checkbox status
   if (document.getElementById("useCustomEntryPrice").checked) {
     customEntryInput.style.display = "block";
     entryPriceDisplay.style.display = "none";
@@ -69,7 +68,7 @@ async function loadCandlestickChart() {
     if (!chart) {
       chart = LightweightCharts.createChart(document.getElementById("chart"), {
         width: 600,
-        height: 250, // Adjusted chart size for better fit
+        height: 250,
         layout: { backgroundColor: '#0d0e13', textColor: '#e0e0e0' },
         grid: { vertLines: { color: '#2a2a2a' }, horzLines: { color: '#2a2a2a' } },
         timeScale: { timeVisible: true, borderColor: '#2a2a2a' },
@@ -86,11 +85,9 @@ async function loadCandlestickChart() {
 }
 
 function calculateStopLoss() {
-  // Check if the user has enabled the custom entry price
   const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
   const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
 
-  // Get input values
   const tradeAmount = parseFloat(document.getElementById("tradeAmount").value);
   const tradeAmountType = document.getElementById("tradeAmountType").value;
   const portfolioSize = parseFloat(document.getElementById("portfolioSize").value);
@@ -98,31 +95,56 @@ function calculateStopLoss() {
   const leverage = parseFloat(document.getElementById("leverage").value);
   const positionType = document.getElementById("positionType").value;
 
-  // Use custom entry price if enabled; otherwise, use the fetched entry price
   const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
 
-  // Ensure all required values are available
   if (isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage) || isNaN(effectiveEntryPrice)) {
     alert("Please fill in all fields correctly.");
     return;
   }
 
-  // Calculate position size and risk-adjusted stop-loss
   const positionSize = tradeAmountType === "usd" ? tradeAmount / effectiveEntryPrice : tradeAmount;
   const initialMargin = (positionSize * effectiveEntryPrice) / leverage;
   const riskAmount = portfolioSize * (riskPercentage / 100);
 
-  // Calculate stop-loss price based on position type
   if (positionType === "long") {
     stopLossPrice = effectiveEntryPrice - (riskAmount / initialMargin);
   } else if (positionType === "short") {
     stopLossPrice = effectiveEntryPrice + (riskAmount / initialMargin);
   }
 
-  // Display the calculated stop-loss price
   document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
   updateStopLossLine(stopLossPrice);
 }
 
 function updateStopLossLine(stopLossPrice) {
-  if (chart && candleSeri
+  if (chart && candleSeries) {
+    if (stopLossLineSeries) {
+      chart.removeSeries(stopLossLineSeries);
+    }
+
+    stopLossLineSeries = chart.addLineSeries({
+      color: 'red',
+      lineWidth: 2,
+    });
+
+    const visibleRange = chart.timeScale().getVisibleRange();
+    stopLossLineSeries.setData([
+      { time: visibleRange.from, value: stopLossPrice },
+      { time: visibleRange.to, value: stopLossPrice }
+    ]);
+
+    candleSeries.setMarkers([
+      {
+        time: visibleRange.from,
+        price: stopLossPrice,
+        color: 'red',
+        shape: 'arrowDown',
+        text: `Stop-Loss: $${stopLossPrice.toFixed(2)}`
+      }
+    ]);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  selectCrypto("BTC");
+});
