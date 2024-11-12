@@ -84,6 +84,7 @@ function calculateStopLoss() {
     return;
   }
 
+  // Convert trade amount to crypto if entered in USD
   const positionSize = tradeAmountType === "usd" ? tradeAmount / entryPrice : tradeAmount;
 
   const initialMargin = (positionSize * entryPrice) / leverage;
