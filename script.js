@@ -69,7 +69,7 @@ async function loadCandlestickChart() {
     if (!chart) {
       chart = LightweightCharts.createChart(document.getElementById("chart"), {
         width: 600,
-        height: 300,
+        height: 250, // Smaller chart height
         layout: { backgroundColor: '#0d0e13', textColor: '#e0e0e0' },
         grid: { vertLines: { color: '#2a2a2a' }, horzLines: { color: '#2a2a2a' } },
         timeScale: { timeVisible: true, borderColor: '#2a2a2a' },
@@ -96,7 +96,6 @@ function calculateStopLoss() {
   const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
   const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
 
-  // Use custom entry price if enabled; otherwise, use fetched entry price
   const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
 
   if (isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage) || isNaN(effectiveEntryPrice)) {
