@@ -116,3 +116,14 @@ h1 {
   border-radius: 10px;
   overflow: hidden;
 }
+
+#customEntryPrice {
+  display: none;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #2a2d3e;
+  color: #fff;
+  margin-top: 5px;
+  width: 100%;
+}
