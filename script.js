@@ -93,20 +93,27 @@ function calculateStopLoss() {
     return;
   }
 
+  // Constants
+  const feeRate = 0.00075; // Example taker fee rate (0.075%) for MEXC
+
   // Calculate the dollar amount the user is willing to lose (risk amount)
   const riskAmount = portfolioSize * (riskPercentage / 100);
 
-  // Calculate stop-loss price based on risk amount and leverage
+  // Adjust the risk amount to account for MEXC trading fees
+  const adjustedRiskAmount = riskAmount - 2 * (tradeAmount * feeRate);
+
+  // Calculate stop-loss price based on adjusted risk amount and leverage
   if (positionType === "long") {
-    stopLossPrice = entryPrice - (riskAmount / (tradeAmount * leverage));
+    stopLossPrice = entryPrice - (adjustedRiskAmount / (tradeAmount * leverage));
   } else if (positionType === "short") {
-    stopLossPrice = entryPrice + (riskAmount / (tradeAmount * leverage));
+    stopLossPrice = entryPrice + (adjustedRiskAmount / (tradeAmount * leverage));
   }
 
   // Display the stop-loss price
   document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
   updateStopLossLine(stopLossPrice);
 }
+
 
 
   const riskAmount = portfolioSize * (riskPercentage / 100);
