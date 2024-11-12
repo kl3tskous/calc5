@@ -5,24 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crypto Stop-Loss Calculator</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Include TradingView Lightweight Charts Library -->
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>Crypto Stop-Loss Calculator</h1>
 
-    <!-- Cryptocurrency Selection -->
     <div class="crypto-selection">
       <button onclick="selectCrypto('BTC')">BTC</button>
       <button onclick="selectCrypto('ETH')">ETH</button>
       <button onclick="selectCrypto('SOL')">SOL</button>
     </div>
 
-    <!-- Entry Price Display -->
     <div id="entry-price">Entry Price: --</div>
 
-    <!-- Stop-Loss Calculator Form -->
     <div class="calculator-form">
       <label>
         Amount in Trade (USD):
@@ -50,10 +46,8 @@
       <button onclick="calculateStopLoss()">Calculate Stop-Loss</button>
     </div>
 
-    <!-- Stop-Loss Price Display -->
     <div id="stop-loss-result">Stop-Loss Price: --</div>
 
-    <!-- Chart Container for TradingView Lightweight Chart -->
     <div id="chart-container">
       <div id="chart" style="width: 800px; height: 400px;"></div>
     </div>
