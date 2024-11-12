@@ -39,8 +39,9 @@ function calculateStopLoss() {
   const riskAmount = portfolioSize * (riskPercentage / 100);
 
   // Calculate stop-loss price based on risk amount and leverage
-  stopLossPrice = entryPrice - (riskAmount / (tradeAmount * leverage));
-  if (positionType === "short") {
+  if (positionType === "long") {
+    stopLossPrice = entryPrice - (riskAmount / (tradeAmount * leverage));
+  } else if (positionType === "short") {
     stopLossPrice = entryPrice + (riskAmount / (tradeAmount * leverage));
   }
 
