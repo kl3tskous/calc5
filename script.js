@@ -41,46 +41,45 @@ async function loadCandlestickChart() {
     const ctx = document.getElementById("chart").getContext("2d");
 
     if (window.myChart) {
-      window.myChart.data.datasets[0].data = candlestickData;
-      window.myChart.update();
-    } else {
-      window.myChart = new Chart(ctx, {
-        type: 'candlestick',
-        data: {
-          datasets: [{
-            label: `${selectedCrypto.slice(0, -4)} Price (15m)`,
-            data: candlestickData,
-            borderColor: "#58a6ff",
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            x: {
-              type: 'time',
-              time: {
-                unit: 'minute'
-              },
-              title: {
-                display: true,
-                text: 'Time'
-              }
+      window.myChart.destroy(); // Destroy existing chart to avoid re-using old data
+    }
+
+    window.myChart = new Chart(ctx, {
+      type: 'candlestick',
+      data: {
+        datasets: [{
+          label: `${selectedCrypto.slice(0, -4)} Price (15m)`,
+          data: candlestickData,
+          borderColor: "#58a6ff",
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'minute'
             },
-            y: {
-              title: {
-                display: true,
-                text: 'Price (USD)'
-              }
+            title: {
+              display: true,
+              text: 'Time'
             }
           },
-          plugins: {
-            annotation: {
-              annotations: {}
+          y: {
+            title: {
+              display: true,
+              text: 'Price (USD)'
             }
           }
+        },
+        plugins: {
+          annotation: {
+            annotations: {}
+          }
         }
-      });
-    }
+      }
+    });
   } catch (error) {
     console.error("Error loading candlestick data:", error);
     alert("Error loading candlestick data. Please try again.");
