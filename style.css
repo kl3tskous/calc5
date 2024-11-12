@@ -27,13 +27,6 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* Description Text */
-.description {
-    font-size: 14px;
-    color: #a1a1a1;
-    margin-bottom: 20px;
-}
-
 /* Cryptocurrency Selection Buttons */
 .crypto-selection button {
     background-color: #393e46;
@@ -43,44 +36,10 @@ h1 {
     margin: 5px;
     border-radius: 5px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.crypto-selection button img {
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
 }
 
 .crypto-selection button:hover {
     background-color: #58a6ff;
-}
-
-/* Entry Price and Refresh Button */
-#entry-price-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-#entry-price {
-    font-size: 18px;
-    margin-right: 5px;
-}
-
-#refresh-price {
-    background: none;
-    border: none;
-    color: #58a6ff;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-#refresh-price:hover {
-    color: #39d353;
 }
 
 /* Chart Container */
@@ -88,6 +47,17 @@ h1 {
     margin: 20px 0;
     width: 100%;
     overflow: hidden;
+}
+
+#chart {
+    width: 100%;
+    height: 200px;
+}
+
+/* Entry Price Display */
+#entry-price {
+    font-size: 18px;
+    margin-top: 10px;
 }
 
 /* Form Labels and Inputs */
