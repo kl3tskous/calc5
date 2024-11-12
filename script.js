@@ -100,7 +100,6 @@ function calculateStopLoss() {
     const dollarRisk = portfolioSize * riskPercentage;
 
     // Step 3: Adjust stop-loss distance with leverage in isolated margin mode
-    // With higher leverage, a smaller price movement covers the dollar risk, so stop-loss is closer
     const stopLossPrice = effectiveEntryPrice - (dollarRisk / isolatedMargin);
 
     // Display the stop-loss price
