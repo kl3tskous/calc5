@@ -20,9 +20,19 @@ async function fetchPrice() {
   
   const cryptoId = cryptoIdMap[selectedCrypto];
   
+  if (!cryptoId) {
+    console.error("Invalid cryptocurrency symbol.");
+    return;
+  }
+
   try {
     const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cryptoId}&vs_currencies=usd`);
     const data = await response.json();
+    
+    if (!data[cryptoId] || !data[cryptoId].usd) {
+      throw new Error("Unexpected API response format.");
+    }
+
     entryPrice = data[cryptoId].usd;
     document.getElementById("entry-price").innerText = `Entry Price: $${entryPrice}`;
   } catch (error) {
@@ -37,7 +47,6 @@ async function loadCandlestickChart() {
     const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${selectedCrypto}&interval=15m&limit=50`);
     const data = await response.json();
     
-    // Convert data to format required by TradingView Lightweight Charts
     const candlestickData = data.map(candle => ({
       time: candle[0] / 1000, // Convert from ms to seconds
       open: parseFloat(candle[1]),
@@ -46,7 +55,6 @@ async function loadCandlestickChart() {
       close: parseFloat(candle[4]),
     }));
 
-    // Initialize or update chart with TradingView's Lightweight Charts library
     if (!chart) {
       chart = LightweightCharts.createChart(document.getElementById("chart"), {
         width: 800,
@@ -63,8 +71,6 @@ async function loadCandlestickChart() {
         priceScale: { borderColor: '#2a2a2a' },
       });
       candleSeries = chart.addCandlestickSeries();
-    } else {
-      candleSeries.setData([]);
     }
 
     candleSeries.setData(candlestickData);
@@ -101,7 +107,7 @@ function calculateStopLoss() {
 
 // Update chart to display a stop-loss line
 function updateStopLossLine(stopLossPrice) {
-  if (chart) {
+  if (candleSeries && chart) {
     chart.removeSeries(candleSeries);
     candleSeries = chart.addCandlestickSeries();
     candleSeries.applyOptions({
