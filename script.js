@@ -1,7 +1,6 @@
 let entryPrice = 0;
 let chart, candleSeries, stopLossLineSeries;
 
-// Function to select a cryptocurrency and fetch live price
 async function selectCrypto(cryptoId, symbol) {
     const entryPriceField = document.getElementById("entry-price");
     entryPriceField.innerText = "Fetching...";
@@ -19,7 +18,7 @@ async function selectCrypto(cryptoId, symbol) {
 
         if (entryPrice) {
             entryPriceField.innerText = `Entry Price: $${entryPrice.toFixed(2)} USD`;
-            loadCandlestickChart(symbol); // Load the chart for the selected cryptocurrency
+            loadCandlestickChart(symbol);
         } else {
             entryPriceField.innerText = "Price not available";
         }
@@ -29,7 +28,6 @@ async function selectCrypto(cryptoId, symbol) {
     }
 }
 
-// Function to toggle custom entry price input
 function toggleCustomEntryPrice() {
     const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
     const customEntryInput = document.getElementById("customEntryPrice");
@@ -44,7 +42,6 @@ function toggleCustomEntryPrice() {
     }
 }
 
-// Function to load the candlestick chart
 async function loadCandlestickChart(symbol) {
     try {
         const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}USDT&interval=15m&limit=50`);
@@ -77,37 +74,38 @@ async function loadCandlestickChart(symbol) {
     }
 }
 
-// Function to calculate stop-loss price for isolated margin mode
 function calculateStopLoss() {
     const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
     const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
     const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
 
-    const tradeAmount = parseFloat(document.getElementById("trade-amount").value);
-    const portfolioSize = parseFloat(document.getElementById("portfolio-size").value);
-    const riskPercentage = parseFloat(document.getElementById("risk-percentage").value) / 100;
-    const leverage = parseFloat(document.getElementById("leverage").value);
+    const tradeAmount = parseFloat(document.getElementById("trade-amount")?.value);
+    const portfolioSize = parseFloat(document.getElementById("portfolio-size")?.value);
+    const riskPercentage = parseFloat(document.getElementById("risk-percentage")?.value) / 100;
+    const leverage = parseFloat(document.getElementById("leverage")?.value);
+
+    // Log values to ensure elements are being fetched correctly
+    console.log({
+        effectiveEntryPrice,
+        tradeAmount,
+        portfolioSize,
+        riskPercentage,
+        leverage
+    });
 
     if (isNaN(effectiveEntryPrice) || isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage)) {
         alert("Please fill in all fields correctly.");
         return;
     }
 
-    // Step 1: Calculate the isolated margin allocated to the position (collateral)
     const isolatedMargin = tradeAmount / leverage;
-
-    // Step 2: Calculate the dollar risk based on portfolio size and risk percentage
     const dollarRisk = portfolioSize * riskPercentage;
-
-    // Step 3: Adjust stop-loss distance with leverage in isolated margin mode
     const stopLossPrice = effectiveEntryPrice - (dollarRisk / isolatedMargin);
 
-    // Display the stop-loss price
     document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
     updateStopLossLine(stopLossPrice);
 }
 
-// Function to update stop-loss line on the chart
 function updateStopLossLine(stopLossPrice) {
     if (chart && candleSeries) {
         if (stopLossLineSeries) {
@@ -127,7 +125,6 @@ function updateStopLossLine(stopLossPrice) {
     }
 }
 
-// Ensure the chart resizes properly on window resize
 window.addEventListener("resize", () => {
     if (chart) {
         chart.resize(document.getElementById("chart-container").offsetWidth, 200);
