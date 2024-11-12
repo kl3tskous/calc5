@@ -97,10 +97,10 @@ function calculateStopLoss() {
     // Step 1: Calculate dollar risk based on portfolio size and risk percentage
     const dollarRisk = portfolioSize * riskPercentage;
 
-    // Step 2: Calculate the price movement required based on leverage and dollar risk
-    const priceMovement = dollarRisk / (tradeAmount / effectiveEntryPrice * leverage);
+    // Step 2: Calculate the price movement required to reach the dollar risk, accounting for leverage
+    const priceMovement = (dollarRisk / (tradeAmount / effectiveEntryPrice)) / leverage;
 
-    // Step 3: Set stop-loss price based on position type
+    // Step 3: Adjust the stop-loss based on position type (closer for higher leverage)
     const stopLossPrice = (position === "long") 
         ? effectiveEntryPrice - priceMovement 
         : effectiveEntryPrice + priceMovement;
