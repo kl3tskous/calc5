@@ -1,22 +1,28 @@
-
+/* General reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Dark theme */
+/* Dark Raydium-inspired theme */
 body {
-  background-color: #121212;
+  background-color: #0d0e13;
   color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .container {
   max-width: 800px;
-  margin: 0 auto;
   padding: 20px;
   text-align: center;
+  border-radius: 10px;
+  background-color: #1a1c23;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
 /* Title styling */
@@ -27,17 +33,18 @@ h1 {
 
 /* Cryptocurrency selection buttons */
 .crypto-selection button {
-  background-color: #2a2a2a;
+  background-color: #2a2d3e;
   color: #39d353;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
   cursor: pointer;
   margin: 5px;
+  transition: background 0.3s ease;
 }
 
 .crypto-selection button:hover {
-  background-color: #3a3a3a;
+  background-color: #3a3e52;
 }
 
 /* Entry price display */
@@ -56,16 +63,22 @@ h1 {
 .calculator-form label {
   display: block;
   margin: 10px 0;
+  text-align: left;
 }
 
 .calculator-form input,
 .calculator-form select {
-  padding: 8px;
+  padding: 10px;
   border-radius: 5px;
   border: none;
   width: 100%;
   margin-top: 5px;
-  color: #000;
+  background-color: #2a2d3e;
+  color: #fff;
+}
+
+.calculator-form input::placeholder {
+  color: #b0b3b8;
 }
 
 .calculator-form button {
@@ -74,8 +87,9 @@ h1 {
   background-color: #39d353;
   border: none;
   border-radius: 5px;
-  color: #121212;
+  color: #0d0e13;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .calculator-form button:hover {
@@ -92,4 +106,6 @@ h1 {
 /* Chart container */
 #chart-container {
   margin-top: 30px;
+  border-radius: 10px;
+  overflow: hidden;
 }
