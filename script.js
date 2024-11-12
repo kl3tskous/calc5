@@ -40,11 +40,11 @@ async function fetchPrice() {
 }
 
 function toggleCustomEntryPrice() {
-  const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
   const customEntryInput = document.getElementById("customEntryPrice");
   const entryPriceDisplay = document.getElementById("entry-price");
 
-  if (useCustomEntry) {
+  // Toggle visibility based on checkbox status
+  if (document.getElementById("useCustomEntryPrice").checked) {
     customEntryInput.style.display = "block";
     entryPriceDisplay.style.display = "none";
   } else {
@@ -101,6 +101,7 @@ function calculateStopLoss() {
   // Use custom entry price if enabled; otherwise, use the fetched entry price
   const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
 
+  // Ensure all required values are available
   if (isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage) || isNaN(effectiveEntryPrice)) {
     alert("Please fill in all fields correctly.");
     return;
@@ -124,34 +125,4 @@ function calculateStopLoss() {
 }
 
 function updateStopLossLine(stopLossPrice) {
-  if (chart && candleSeries) {
-    if (stopLossLineSeries) {
-      chart.removeSeries(stopLossLineSeries);
-    }
-
-    stopLossLineSeries = chart.addLineSeries({
-      color: 'red',
-      lineWidth: 2,
-    });
-
-    const visibleRange = chart.timeScale().getVisibleRange();
-    stopLossLineSeries.setData([
-      { time: visibleRange.from, value: stopLossPrice },
-      { time: visibleRange.to, value: stopLossPrice }
-    ]);
-
-    candleSeries.setMarkers([
-      {
-        time: visibleRange.from,
-        price: stopLossPrice,
-        color: 'red',
-        shape: 'arrowDown',
-        text: `Stop-Loss: $${stopLossPrice.toFixed(2)}`
-      }
-    ]);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  selectCrypto("BTC");
-});
+  if (chart && candleSeri
