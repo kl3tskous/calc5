@@ -7,8 +7,10 @@
   <link rel="stylesheet" href="style.css">
   <!-- Include Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Include Chart.js Annotation Plugin -->
+  <!-- Include Chart.js Annotation Plugin for adding lines -->
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.0"></script>
+  <!-- Include Chart.js Financial Chart Plugin for Candlestick Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@3.3.0/dist/chartjs-chart-financial.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -16,9 +18,9 @@
 
     <!-- Cryptocurrency Selection -->
     <div class="crypto-selection">
-      <button onclick="selectCrypto('bitcoin')">BTC</button>
-      <button onclick="selectCrypto('ethereum')">ETH</button>
-      <button onclick="selectCrypto('solana')">SOL</button>
+      <button onclick="selectCrypto('BTC')">BTC</button>
+      <button onclick="selectCrypto('ETH')">ETH</button>
+      <button onclick="selectCrypto('SOL')">SOL</button>
     </div>
 
     <!-- Entry Price Display -->
