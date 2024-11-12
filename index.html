@@ -11,22 +11,11 @@
     <div class="container">
         <h1>Crypto Stop-Loss Calculator</h1>
 
-        <!-- Explanation Section -->
-        <p class="description">
-            This tool helps traders calculate an optimal stop-loss price based on entry price, risk tolerance, leverage, and portfolio size.
-        </p>
-
-        <!-- Cryptocurrency Selection with Logos -->
+        <!-- Cryptocurrency Selection -->
         <div class="crypto-selection">
-            <button onclick="selectCrypto('bitcoin', 'BTC')">
-                <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC" class="coin-logo"> BTC
-            </button>
-            <button onclick="selectCrypto('ethereum', 'ETH')">
-                <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="coin-logo"> ETH
-            </button>
-            <button onclick="selectCrypto('solana', 'SOL')">
-                <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="SOL" class="coin-logo"> SOL
-            </button>
+            <button onclick="selectCrypto('bitcoin', 'BTC')">BTC</button>
+            <button onclick="selectCrypto('ethereum', 'ETH')">ETH</button>
+            <button onclick="selectCrypto('solana', 'SOL')">SOL</button>
         </div>
 
         <!-- Chart Container -->
@@ -34,10 +23,9 @@
             <div id="chart"></div>
         </div>
 
-        <!-- Entry Price Display with Refresh Button -->
+        <!-- Entry Price Display -->
         <div id="entry-price-container">
             <span id="entry-price">Entry Price: --</span>
-            <button id="refresh-price" onclick="refreshEntryPrice()" title="Refresh Entry Price">🔄</button>
         </div>
         <label><input type="checkbox" id="useCustomEntryPrice" onclick="toggleCustomEntryPrice()"> Use Custom Entry Price</label>
         <input type="number" id="customEntryPrice" placeholder="Enter custom entry price" style="display:none;">
