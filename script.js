@@ -39,6 +39,20 @@ async function fetchPrice() {
   }
 }
 
+function toggleCustomEntryPrice() {
+  const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
+  const customEntryInput = document.getElementById("customEntryPrice");
+  const entryPriceDisplay = document.getElementById("entry-price");
+
+  if (useCustomEntry) {
+    customEntryInput.style.display = "block";
+    entryPriceDisplay.style.display = "none";
+  } else {
+    customEntryInput.style.display = "none";
+    entryPriceDisplay.style.display = "block";
+  }
+}
+
 async function loadCandlestickChart() {
   try {
     const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${selectedCrypto}&interval=15m&limit=50`);
@@ -54,8 +68,8 @@ async function loadCandlestickChart() {
 
     if (!chart) {
       chart = LightweightCharts.createChart(document.getElementById("chart"), {
-        width: 600,  // Adjusted width to make the chart smaller
-        height: 300, // Adjusted height to make the chart smaller
+        width: 600,
+        height: 300,
         layout: { backgroundColor: '#0d0e13', textColor: '#e0e0e0' },
         grid: { vertLines: { color: '#2a2a2a' }, horzLines: { color: '#2a2a2a' } },
         timeScale: { timeVisible: true, borderColor: '#2a2a2a' },
@@ -65,12 +79,6 @@ async function loadCandlestickChart() {
     }
 
     candleSeries.setData(candlestickData);
-
-    // Clear previous stop-loss line if it exists
-    if (stopLossLineSeries) {
-      chart.removeSeries(stopLossLineSeries);
-      stopLossLineSeries = null;
-    }
   } catch (error) {
     console.error("Error loading candlestick data:", error);
     alert("Error loading candlestick data. Please try again.");
@@ -85,21 +93,25 @@ function calculateStopLoss() {
   const leverage = parseFloat(document.getElementById("leverage").value);
   const positionType = document.getElementById("positionType").value;
 
-  if (isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage) || !entryPrice) {
+  const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
+  const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
+
+  // Use custom entry price if enabled; otherwise, use fetched entry price
+  const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
+
+  if (isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage) || isNaN(effectiveEntryPrice)) {
     alert("Please fill in all fields correctly.");
     return;
   }
 
-  // Convert trade amount to crypto if entered in USD
-  const positionSize = tradeAmountType === "usd" ? tradeAmount / entryPrice : tradeAmount;
-
-  const initialMargin = (positionSize * entryPrice) / leverage;
+  const positionSize = tradeAmountType === "usd" ? tradeAmount / effectiveEntryPrice : tradeAmount;
+  const initialMargin = (positionSize * effectiveEntryPrice) / leverage;
   const riskAmount = portfolioSize * (riskPercentage / 100);
 
   if (positionType === "long") {
-    stopLossPrice = entryPrice - (riskAmount / initialMargin);
+    stopLossPrice = effectiveEntryPrice - (riskAmount / initialMargin);
   } else if (positionType === "short") {
-    stopLossPrice = entryPrice + (riskAmount / initialMargin);
+    stopLossPrice = effectiveEntryPrice + (riskAmount / initialMargin);
   }
 
   document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
@@ -108,27 +120,24 @@ function calculateStopLoss() {
 
 function updateStopLossLine(stopLossPrice) {
   if (chart && candleSeries) {
-    // Add or update a horizontal line overlay at the stop-loss price
-    if (!stopLossLineSeries) {
-      stopLossLineSeries = chart.addLineSeries({
-        color: 'red',
-        lineWidth: 2,
-      });
+    if (stopLossLineSeries) {
+      chart.removeSeries(stopLossLineSeries);
     }
 
-    // Set the stop-loss line data
+    stopLossLineSeries = chart.addLineSeries({
+      color: 'red',
+      lineWidth: 2,
+    });
+
+    const visibleRange = chart.timeScale().getVisibleRange();
     stopLossLineSeries.setData([
-      { time: chart.timeScale().getVisibleRange().from, value: stopLossPrice },
-      { time: chart.timeScale().getVisibleRange().to, value: stopLossPrice }
+      { time: visibleRange.from, value: stopLossPrice },
+      { time: visibleRange.to, value: stopLossPrice }
     ]);
 
-    // Clear previous markers
-    candleSeries.setMarkers([]);
-
-    // Add a marker for the stop-loss price with a label
     candleSeries.setMarkers([
       {
-        time: chart.timeScale().getVisibleRange().from, // Position at start of visible chart
+        time: visibleRange.from,
         price: stopLossPrice,
         color: 'red',
         shape: 'arrowDown',
