@@ -11,18 +11,32 @@
   <div class="container">
     <h1>Crypto Stop-Loss Calculator</h1>
 
+    <!-- Cryptocurrency Selection -->
     <div class="crypto-selection">
       <button onclick="selectCrypto('BTC')">BTC</button>
       <button onclick="selectCrypto('ETH')">ETH</button>
       <button onclick="selectCrypto('SOL')">SOL</button>
     </div>
 
+    <!-- Chart Container for TradingView Lightweight Chart -->
+    <div id="chart-container">
+      <div id="chart"></div>
+    </div>
+
+    <!-- Entry Price Display -->
     <div id="entry-price">Entry Price: --</div>
 
+    <!-- Stop-Loss Calculator Form -->
     <div class="calculator-form">
       <label>
-        Amount in Trade (USD):
-        <input type="number" id="tradeAmount" placeholder="Enter trade amount">
+        Amount in Trade:
+        <div class="input-group">
+          <input type="number" id="tradeAmount" placeholder="Enter amount">
+          <select id="tradeAmountType">
+            <option value="usd">USD</option>
+            <option value="crypto">Crypto</option>
+          </select>
+        </div>
       </label>
       <label>
         Portfolio Size (USD):
@@ -46,11 +60,8 @@
       <button onclick="calculateStopLoss()">Calculate Stop-Loss</button>
     </div>
 
+    <!-- Stop-Loss Price Display -->
     <div id="stop-loss-result">Stop-Loss Price: --</div>
-
-    <div id="chart-container">
-      <div id="chart" style="width: 800px; height: 400px;"></div>
-    </div>
   </div>
 
   <script src="script.js"></script>
