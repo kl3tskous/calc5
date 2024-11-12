@@ -33,17 +33,7 @@ async function selectCrypto(cryptoId, symbol) {
 async function loadCandlestickChart(symbol) {
     try {
         const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}USDT&interval=15m&limit=50`);
-
-        if (!response.ok) {
-            console.error(`API response status: ${response.status} ${response.statusText}`);
-            throw new Error(`Failed to load data. Status: ${response.status}`);
-        }
-
         const data = await response.json();
-
-        if (!Array.isArray(data)) {
-            throw new Error("Unexpected data format from API");
-        }
 
         const candlestickData = data.map(candle => ({
             time: candle[0] / 1000,
@@ -104,4 +94,7 @@ function updateStopLossLine(stopLossPrice) {
         const visibleRange = chart.timeScale().getVisibleRange();
         stopLossLineSeries.setData([
             { time: visibleRange.from, value: stopLossPrice },
-            { time: visib
+            { time: visibleRange.to, value: stopLossPrice }
+        ]);
+    }
+}
