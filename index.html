@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crypto Stop-Loss Calculator</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Include Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
@@ -12,9 +14,9 @@
 
     <!-- Cryptocurrency Selection -->
     <div class="crypto-selection">
-      <button onclick="selectCrypto('BTC')">BTC</button>
-      <button onclick="selectCrypto('ETH')">ETH</button>
-      <button onclick="selectCrypto('SOL')">SOL</button>
+      <button onclick="selectCrypto('bitcoin')">BTC</button>
+      <button onclick="selectCrypto('ethereum')">ETH</button>
+      <button onclick="selectCrypto('solana')">SOL</button>
     </div>
 
     <!-- Entry Price Display -->
