@@ -1,108 +1,94 @@
-    let entryPrice = 0;
-let chart, candleSeries, stopLossLineSeries;
-
-// Function to select a cryptocurrency and fetch live price
-async function selectCrypto(cryptoId, symbol) {
-    const entryPriceField = document.getElementById("entry-price");
-    entryPriceField.innerText = "Fetching...";
-
-    const proxyUrl = "https://api.allorigins.win/get?url=";
-    const apiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoId}&vs_currencies=usd`;
-    const url = `${proxyUrl}${encodeURIComponent(apiUrl)}`;
-
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        const parsedData = JSON.parse(data.contents);
-
-        entryPrice = parsedData[cryptoId]?.usd;
-
-        if (entryPrice) {
-            entryPriceField.innerText = `Entry Price: $${entryPrice.toFixed(2)} USD`;
-            loadCandlestickChart(symbol);
-        } else {
-            entryPriceField.innerText = "Price not available";
-        }
-    } catch (error) {
-        entryPriceField.innerText = "Error fetching price";
-        console.error("Error fetching live price:", error);
-    }
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0 10px;
 }
 
-// Function to toggle custom entry price input
-function toggleCustomEntryPrice() {
-    const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
-    const customEntryInput = document.getElementById("customEntryPrice");
-    const entryPriceDisplay = document.getElementById("entry-price");
-
-    if (useCustomEntry) {
-        customEntryInput.style.display = "block";
-        entryPriceDisplay.style.display = "none";
-    } else {
-        customEntryInput.style.display = "none";
-        entryPriceDisplay.style.display = "block";
-    }
+/* Main Container */
+.container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #0d0e13;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
-// Function to load the candlestick chart
-async function loadCandlestickChart(symbol) {
-    try {
-        // Fetch candlestick data from Binance API
-        const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}USDT&interval=15m&limit=50`);
-
-        // Check if the response is okay
-        if (!response.ok) {
-            console.error(`API response status: ${response.status} ${response.statusText}`);
-            throw new Error(`Failed to load data. Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        // Check if data returned is in expected format
-        if (!Array.isArray(data)) {
-            throw new Error("Unexpected data format from API");
-        }
-
-        // Map the API data to the format required by Lightweight Charts
-        const candlestickData = data.map(candle => ({
-            time: candle[0] / 1000,
-            open: parseFloat(candle[1]),
-            high: parseFloat(candle[2]),
-            low: parseFloat(candle[3]),
-            close: parseFloat(candle[4]),
-        }));
-
-        // Initialize chart if not already initialized
-        if (!chart) {
-            chart = LightweightCharts.createChart(document.getElementById("chart"), {
-                width: document.getElementById("chart-container").offsetWidth,
-                height: 200,
-                layout: { backgroundColor: '#0d0e13', textColor: '#e0e0e0' },
-                grid: { vertLines: { color: '#2a2a2a' }, horzLines: { color: '#2a2a2a' } },
-                timeScale: { timeVisible: true, borderColor: '#2a2a2a' },
-                priceScale: { borderColor: '#2a2a2a' },
-            });
-            candleSeries = chart.addCandlestickSeries();
-        }
-
-        // Set the chart data
-        candleSeries.setData(candlestickData);
-    } catch (error) {
-        // Log the error to the console for debugging
-        console.error("Error loading candlestick data:", error);
-        alert("Error loading candlestick data. Please check your network or try again.");
-    }
+h1 {
+    color: #58a6ff;
+    margin-bottom: 20px;
 }
 
+/* Cryptocurrency Selection Buttons */
+.crypto-selection button {
+    background-color: #393e46;
+    color: #e0e0e0;
+    border: none;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-// Function to calculate stop-loss price for isolated margin mode
-function calculateStopLoss() {
-    const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
-    const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
-    const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
+.crypto-selection button:hover {
+    background-color: #58a6ff;
+}
 
-    const tradeAmount = parseFloat(document.getElementById("trade-amount")?.value);
-    const portfolioSize = parseFloat(document.getElementById("portfolio-size")?.value);
-    const riskPercentage = parseFloat(document.getElementById("risk-percentage")?.value) / 100;
-    const leverage = parseFloat(document.getElementById("leverage")?.value);
-    const position = document.getElement
+/* Chart Container */
+#chart-container {
+    margin: 20px 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+#chart {
+    width: 100%;
+    height: 200px;
+}
+
+/* Entry Price Display */
+#entry-price {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+/* Form Labels and Inputs */
+.calculator-form label,
+.calculator-form input,
+.calculator-form select {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.calculator-form input,
+.calculator-form select {
+    padding: 8px;
+    background-color: #1f2235;
+    color: #e0e0e0;
+    border: 1px solid #393e46;
+    border-radius: 5px;
+}
+
+/* Calculate Button */
+button {
+    background-color: #39d353;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #2b8f3e;
+}
