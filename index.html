@@ -10,12 +10,20 @@
 <body>
   <div class="container">
     <h1>Crypto Stop-Loss Calculator</h1>
+    
+    <!-- Introductory Text -->
+    <p class="intro-text">
+      This tool helps cryptocurrency traders set an optimal stop-loss price based on market data, position size, risk tolerance, and leverage. 
+      Select a cryptocurrency, view its live price and chart, and enter your trade details to calculate your stop-loss price.
+    </p>
 
     <!-- Cryptocurrency Selection -->
+    <h2>Select Cryptocurrency</h2>
+    <p>Select a cryptocurrency to view its live price and chart data.</p>
     <div class="crypto-selection">
-      <button onclick="selectCrypto('BTC')">BTC</button>
-      <button onclick="selectCrypto('ETH')">ETH</button>
-      <button onclick="selectCrypto('SOL')">SOL</button>
+      <button onclick="selectCrypto('bitcoin', 'BTC')">BTC</button>
+      <button onclick="selectCrypto('ethereum', 'ETH')">ETH</button>
+      <button onclick="selectCrypto('solana', 'SOL')">SOL</button>
     </div>
 
     <!-- Chart Container -->
@@ -37,33 +45,20 @@
     <!-- Stop-Loss Calculator Form -->
     <div class="calculator-form">
       <label>
-        Amount in Trade:
-        <div class="input-group">
-          <input type="number" id="tradeAmount" placeholder="Enter amount">
-          <select id="tradeAmountType">
-            <option value="usd">USD</option>
-            <option value="crypto">Crypto</option>
-          </select>
-        </div>
+        Amount in Trade (USD):
+        <input type="number" id="trade-amount" placeholder="Enter amount">
       </label>
       <label>
         Portfolio Size (USD):
-        <input type="number" id="portfolioSize" placeholder="Enter portfolio size">
+        <input type="number" id="portfolio-size" placeholder="Enter portfolio size">
       </label>
       <label>
         Risk Percentage (%):
-        <input type="number" id="riskPercentage" placeholder="Enter risk percentage">
+        <input type="number" id="risk-percentage" placeholder="Enter risk percentage">
       </label>
       <label>
         Leverage:
         <input type="number" id="leverage" placeholder="Enter leverage (e.g., 1)">
-      </label>
-      <label>
-        Position Type:
-        <select id="positionType">
-          <option value="long">Long</option>
-          <option value="short">Short</option>
-        </select>
       </label>
       <button onclick="calculateStopLoss()">Calculate Stop-Loss</button>
     </div>
