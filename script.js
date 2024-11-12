@@ -1,150 +1,136 @@
 let entryPrice = 0;
-let selectedCrypto = 'BTCUSDT';
-let stopLossPrice = 0;
 let chart, candleSeries, stopLossLineSeries;
 
-async function selectCrypto(crypto) {
-  selectedCrypto = crypto + 'USDT';
-  await fetchPrice();
-  await loadCandlestickChart();
-}
+// Function to select a cryptocurrency and fetch live price
+async function selectCrypto(cryptoId, symbol) {
+    const entryPriceField = document.getElementById("entry-price");
+    entryPriceField.innerText = "Fetching...";
 
-async function fetchPrice() {
-  const cryptoIdMap = {
-    'BTCUSDT': 'bitcoin',
-    'ETHUSDT': 'ethereum',
-    'SOLUSDT': 'solana'
-  };
-  
-  const cryptoId = cryptoIdMap[selectedCrypto];
-  
-  if (!cryptoId) {
-    console.error("Invalid cryptocurrency symbol.");
-    return;
-  }
+    const proxyUrl = "https://api.allorigins.win/get?url=";
+    const apiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoId}&vs_currencies=usd`;
+    const url = `${proxyUrl}${encodeURIComponent(apiUrl)}`;
 
-  try {
-    const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cryptoId}&vs_currencies=usd`);
-    const data = await response.json();
-    
-    if (!data[cryptoId] || !data[cryptoId].usd) {
-      throw new Error("Unexpected API response format.");
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const parsedData = JSON.parse(data.contents);
+
+        entryPrice = parsedData[cryptoId]?.usd;
+
+        if (entryPrice) {
+            entryPriceField.innerText = `Entry Price: $${entryPrice.toFixed(2)} USD`;
+            loadCandlestickChart(symbol); // Load the chart for the selected cryptocurrency
+        } else {
+            entryPriceField.innerText = "Price not available";
+        }
+    } catch (error) {
+        entryPriceField.innerText = "Error fetching price";
+        console.error("Error fetching live price:", error);
     }
-
-    entryPrice = data[cryptoId].usd;
-    document.getElementById("entry-price").innerText = `Entry Price: $${entryPrice}`;
-  } catch (error) {
-    console.error("Error fetching price:", error);
-    alert("Error fetching price. Please try again.");
-  }
 }
 
+// Function to toggle custom entry price input
 function toggleCustomEntryPrice() {
-  const customEntryInput = document.getElementById("customEntryPrice");
-  const entryPriceDisplay = document.getElementById("entry-price");
+    const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
+    const customEntryInput = document.getElementById("customEntryPrice");
+    const entryPriceDisplay = document.getElementById("entry-price");
 
-  if (document.getElementById("useCustomEntryPrice").checked) {
-    customEntryInput.style.display = "block";
-    entryPriceDisplay.style.display = "none";
-  } else {
-    customEntryInput.style.display = "none";
-    entryPriceDisplay.style.display = "block";
-  }
-}
-
-async function loadCandlestickChart() {
-  try {
-    const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${selectedCrypto}&interval=15m&limit=50`);
-    const data = await response.json();
-    
-    const candlestickData = data.map(candle => ({
-      time: candle[0] / 1000,
-      open: parseFloat(candle[1]),
-      high: parseFloat(candle[2]),
-      low: parseFloat(candle[3]),
-      close: parseFloat(candle[4]),
-    }));
-
-    if (!chart) {
-      chart = LightweightCharts.createChart(document.getElementById("chart"), {
-        width: 600,
-        height: 250,
-        layout: { backgroundColor: '#0d0e13', textColor: '#e0e0e0' },
-        grid: { vertLines: { color: '#2a2a2a' }, horzLines: { color: '#2a2a2a' } },
-        timeScale: { timeVisible: true, borderColor: '#2a2a2a' },
-        priceScale: { borderColor: '#2a2a2a' },
-      });
-      candleSeries = chart.addCandlestickSeries();
+    if (useCustomEntry) {
+        customEntryInput.style.display = "block";
+        entryPriceDisplay.style.display = "none";
+    } else {
+        customEntryInput.style.display = "none";
+        entryPriceDisplay.style.display = "block";
     }
-
-    candleSeries.setData(candlestickData);
-  } catch (error) {
-    console.error("Error loading candlestick data:", error);
-    alert("Error loading candlestick data. Please try again.");
-  }
 }
 
+// Function to load the candlestick chart
+async function loadCandlestickChart(symbol) {
+    try {
+        const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}USDT&interval=15m&limit=50`);
+        const data = await response.json();
+
+        const candlestickData = data.map(candle => ({
+            time: candle[0] / 1000,
+            open: parseFloat(candle[1]),
+            high: parseFloat(candle[2]),
+            low: parseFloat(candle[3]),
+            close: parseFloat(candle[4]),
+        }));
+
+        if (!chart) {
+            chart = LightweightCharts.createChart(document.getElementById("chart"), {
+                width: document.getElementById("chart-container").offsetWidth,
+                height: 200,
+                layout: { backgroundColor: '#0d0e13', textColor: '#e0e0e0' },
+                grid: { vertLines: { color: '#2a2a2a' }, horzLines: { color: '#2a2a2a' } },
+                timeScale: { timeVisible: true, borderColor: '#2a2a2a' },
+                priceScale: { borderColor: '#2a2a2a' },
+            });
+            candleSeries = chart.addCandlestickSeries();
+        }
+
+        candleSeries.setData(candlestickData);
+    } catch (error) {
+        console.error("Error loading candlestick data:", error);
+        alert("Error loading candlestick data. Please try again.");
+    }
+}
+
+// Function to calculate stop-loss price for isolated margin mode
 function calculateStopLoss() {
-  const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
-  const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
+    const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
+    const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
+    const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
 
-  const tradeAmount = parseFloat(document.getElementById("tradeAmount").value);
-  const tradeAmountType = document.getElementById("tradeAmountType").value;
-  const portfolioSize = parseFloat(document.getElementById("portfolioSize").value);
-  const riskPercentage = parseFloat(document.getElementById("riskPercentage").value);
-  const leverage = parseFloat(document.getElementById("leverage").value);
-  const positionType = document.getElementById("positionType").value;
+    const tradeAmount = parseFloat(document.getElementById("trade-amount").value);
+    const portfolioSize = parseFloat(document.getElementById("portfolio-size").value);
+    const riskPercentage = parseFloat(document.getElementById("risk-percentage").value) / 100;
+    const leverage = parseFloat(document.getElementById("leverage").value);
 
-  const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
-
-  if (isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage) || isNaN(effectiveEntryPrice)) {
-    alert("Please fill in all fields correctly.");
-    return;
-  }
-
-  const positionSize = tradeAmountType === "usd" ? tradeAmount / effectiveEntryPrice : tradeAmount;
-  const initialMargin = (positionSize * effectiveEntryPrice) / leverage;
-  const riskAmount = portfolioSize * (riskPercentage / 100);
-
-  if (positionType === "long") {
-    stopLossPrice = effectiveEntryPrice - (riskAmount / initialMargin);
-  } else if (positionType === "short") {
-    stopLossPrice = effectiveEntryPrice + (riskAmount / initialMargin);
-  }
-
-  document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
-  updateStopLossLine(stopLossPrice);
-}
-
-function updateStopLossLine(stopLossPrice) {
-  if (chart && candleSeries) {
-    if (stopLossLineSeries) {
-      chart.removeSeries(stopLossLineSeries);
+    if (isNaN(effectiveEntryPrice) || isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage)) {
+        alert("Please fill in all fields correctly.");
+        return;
     }
 
-    stopLossLineSeries = chart.addLineSeries({
-      color: 'red',
-      lineWidth: 2,
-    });
+    // Step 1: Calculate the isolated margin allocated to the position (collateral)
+    const isolatedMargin = tradeAmount / leverage;
 
-    const visibleRange = chart.timeScale().getVisibleRange();
-    stopLossLineSeries.setData([
-      { time: visibleRange.from, value: stopLossPrice },
-      { time: visibleRange.to, value: stopLossPrice }
-    ]);
+    // Step 2: Calculate the dollar risk based on portfolio size and risk percentage
+    const dollarRisk = portfolioSize * riskPercentage;
 
-    candleSeries.setMarkers([
-      {
-        time: visibleRange.from,
-        price: stopLossPrice,
-        color: 'red',
-        shape: 'arrowDown',
-        text: `Stop-Loss: $${stopLossPrice.toFixed(2)}`
-      }
-    ]);
-  }
+    // Step 3: Adjust stop-loss distance with leverage in isolated margin mode
+    // With higher leverage, a smaller price movement covers the dollar risk, so stop-loss is closer
+    const stopLossPrice = effectiveEntryPrice - (dollarRisk / isolatedMargin);
+
+    // Display the stop-loss price
+    document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
+    updateStopLossLine(stopLossPrice);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  selectCrypto("BTC");
+// Function to update stop-loss line on the chart
+function updateStopLossLine(stopLossPrice) {
+    if (chart && candleSeries) {
+        if (stopLossLineSeries) {
+            chart.removeSeries(stopLossLineSeries);
+        }
+
+        stopLossLineSeries = chart.addLineSeries({
+            color: 'red',
+            lineWidth: 2,
+        });
+
+        const visibleRange = chart.timeScale().getVisibleRange();
+        stopLossLineSeries.setData([
+            { time: visibleRange.from, value: stopLossPrice },
+            { time: visibleRange.to, value: stopLossPrice }
+        ]);
+    }
+}
+
+// Ensure the chart resizes properly on window resize
+window.addEventListener("resize", () => {
+    if (chart) {
+        chart.resize(document.getElementById("chart-container").offsetWidth, 200);
+    }
 });
