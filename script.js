@@ -87,6 +87,7 @@ function calculateStopLoss() {
     const portfolioSize = parseFloat(document.getElementById("portfolio-size")?.value);
     const riskPercentage = parseFloat(document.getElementById("risk-percentage")?.value) / 100;
     const leverage = parseFloat(document.getElementById("leverage")?.value);
+    const position = document.getElementById("position-type").value;
 
     if (isNaN(effectiveEntryPrice) || isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage)) {
         alert("Please fill in all fields correctly.");
@@ -96,12 +97,13 @@ function calculateStopLoss() {
     // Step 1: Calculate dollar risk based on portfolio size and risk percentage
     const dollarRisk = portfolioSize * riskPercentage;
 
-    // Step 2: Calculate isolated margin required for the position based on leverage
-    const isolatedMargin = tradeAmount / leverage;
+    // Step 2: Calculate the price movement required based on leverage and dollar risk
+    const priceMovement = dollarRisk / (tradeAmount / effectiveEntryPrice * leverage);
 
-    // Step 3: Calculate stop-loss distance based on isolated margin and dollar risk
-    // Higher leverage should reduce the margin, thus bringing the stop-loss closer
-    const stopLossPrice = effectiveEntryPrice - (dollarRisk / isolatedMargin);
+    // Step 3: Set stop-loss price based on position type
+    const stopLossPrice = (position === "long") 
+        ? effectiveEntryPrice - priceMovement 
+        : effectiveEntryPrice + priceMovement;
 
     // Display the stop-loss price
     document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
