@@ -23,8 +23,16 @@
       <div id="chart"></div>
     </div>
 
-    <!-- Entry Price Display -->
-    <div id="entry-price">Entry Price: --</div>
+    <!-- Entry Price Display or Custom Input -->
+    <div>
+      <label>
+        <input type="checkbox" id="useCustomEntryPrice" onclick="toggleCustomEntryPrice()"> Use Custom Entry Price
+      </label>
+      <div id="entryPriceContainer">
+        <span id="entry-price">Entry Price: --</span>
+        <input type="number" id="customEntryPrice" placeholder="Enter your custom entry price" style="display: none;">
+      </div>
+    </div>
 
     <!-- Stop-Loss Calculator Form -->
     <div class="calculator-form">
