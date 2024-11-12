@@ -153,32 +153,4 @@ h1 {
   }
 
   .crypto-selection button {
-    padding: 6px 10px;
-    font-size: 0.8em;
-  }
-
-  #chart {
-    height: 200px; /* Smaller chart height for mobile */
-  }
-
-  .calculator-form label {
-    margin: 4px 0;
-  }
-
-  .calculator-form input,
-  .calculator-form select,
-  .input-group input,
-  .input-group select {
-    padding: 6px;
-    font-size: 0.8em;
-  }
-
-  .calculator-form button {
-    padding: 6px;
-    font-size: 0.8em;
-  }
-
-  #stop-loss-result {
-    font-size: 0.9em;
-  }
-}
+    padding: 6px 1
