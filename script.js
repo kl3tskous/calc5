@@ -53,16 +53,19 @@ function toggleMode() {
 }
 
 // Stop-Loss Calculation Function
+// Function to calculate stop-loss price for isolated margin mode
 function calculateStopLoss() {
-    const tradeAmount = parseFloat(document.getElementById("trade-amount").value);
-    const portfolioSize = parseFloat(document.getElementById("portfolio-size").value);
-    const riskPercentage = parseFloat(document.getElementById("risk-percentage").value) / 100;
-    const leverage = parseFloat(document.getElementById("leverage").value);
-    const position = document.getElementById("position-type").value;
-    const effectiveEntryPrice = document.getElementById("useCustomEntryPrice").checked 
-        ? parseFloat(document.getElementById("customEntryPrice").value) 
-        : entryPrice;
+    const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
+    const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
+    const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
 
+    const tradeAmount = parseFloat(document.getElementById("trade-amount")?.value);
+    const portfolioSize = parseFloat(document.getElementById("portfolio-size")?.value);
+    const riskPercentage = parseFloat(document.getElementById("risk-percentage")?.value) / 100;
+    const leverage = parseFloat(document.getElementById("leverage")?.value);
+    const position = document.getElementById("position-type").value;
+
+    // Error handling: check if any required field is missing or NaN
     if (isNaN(effectiveEntryPrice) || isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage)) {
         alert("Please fill in all fields correctly.");
         return;
@@ -70,11 +73,40 @@ function calculateStopLoss() {
 
     const dollarRisk = portfolioSize * riskPercentage;
     const priceMovement = (dollarRisk / (tradeAmount / effectiveEntryPrice)) / leverage;
-    const stopLossPrice = position === "long" 
-        ? effectiveEntryPrice - priceMovement 
-        : effectiveEntryPrice + priceMovement;
+    const stopLossPrice = (position === "long") ? effectiveEntryPrice - priceMovement : effectiveEntryPrice + priceMovement;
 
-    document.getElementById("result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
+    // Display result in a single 'result' div
+    const resultElement = document.getElementById("result");
+    if (resultElement) {
+        resultElement.innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
+    } else {
+        console.error("Result element with ID 'result' not found.");
+    }
+}
+
+// Function to calculate position size based on a fixed stop-loss price
+function calculatePositionSize() {
+    const stopLossPrice = parseFloat(document.getElementById("stop-loss-price").value);
+    const portfolioSize = parseFloat(document.getElementById("portfolio-size-ps").value);
+    const riskPercentage = parseFloat(document.getElementById("risk-percentage-ps").value) / 100;
+    const leverage = parseFloat(document.getElementById("leverage-ps").value);
+
+    if (isNaN(entryPrice) || isNaN(stopLossPrice) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage)) {
+        alert("Please fill in all fields correctly.");
+        return;
+    }
+
+    const riskAmount = portfolioSize * riskPercentage;
+    const priceDifference = Math.abs(entryPrice - stopLossPrice);
+    const positionSize = (riskAmount * leverage) / priceDifference;
+
+    // Display result in the same 'result' div
+    const resultElement = document.getElementById("result");
+    if (resultElement) {
+        resultElement.innerText = `Position Size: $${positionSize.toFixed(2)}`;
+    } else {
+        console.error("Result element with ID 'result' not found.");
+    }
 }
 
 // Position Size Calculation Function
