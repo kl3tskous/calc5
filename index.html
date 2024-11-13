@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Stop-Loss Calculator</title>
+    <title>Crypto Calculator</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Load Lightweight Charts Library -->
     <script src="https://unpkg.com/lightweight-charts@3.5.0/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Crypto Stop-Loss Calculator</h1>
+        <h1>Crypto Calculator</h1>
         
+        <!-- Mode Selection -->
+        <div class="mode-selection">
+            <label><input type="radio" name="mode" value="stopLoss" checked onclick="toggleMode()"> Calculate Stop-Loss</label>
+            <label><input type="radio" name="mode" value="positionSize" onclick="toggleMode()"> Calculate Position Size</label>
+        </div>
+
         <!-- Cryptocurrency Selection -->
         <div class="crypto-selection">
             <button onclick="selectCrypto('bitcoin', 'BTC')">BTC</button>
@@ -19,7 +24,7 @@
             <button onclick="selectCrypto('solana', 'SOL')">SOL</button>
         </div>
 
-        <!-- Chart Container for TradingView Lightweight Chart -->
+        <!-- Chart Container -->
         <div id="chart-container">
             <div id="chart"></div>
         </div>
@@ -30,7 +35,7 @@
         <input type="number" id="customEntryPrice" placeholder="Enter custom entry price" style="display:none;">
 
         <!-- Stop-Loss Calculator Form -->
-        <div class="calculator-form">
+        <div class="calculator-form" id="stopLossForm">
             <label for="trade-amount">Amount in Trade (USD):</label>
             <input type="number" id="trade-amount" placeholder="Enter amount">
 
@@ -43,7 +48,6 @@
             <label for="leverage">Leverage:</label>
             <input type="number" id="leverage" placeholder="Enter leverage">
 
-            <!-- Position Type Dropdown -->
             <label for="position-type">Position Type:</label>
             <select id="position-type">
                 <option value="long">Long</option>
@@ -53,11 +57,27 @@
             <button onclick="calculateStopLoss()">Calculate Stop-Loss</button>
         </div>
 
-        <!-- Stop-Loss Price Display -->
-        <div id="stop-loss-result">Stop-Loss Price: --</div>
+        <!-- Position Size Calculator Form -->
+        <div class="calculator-form" id="positionSizeForm" style="display:none;">
+            <label for="stop-loss-price">Stop-Loss Price (USD):</label>
+            <input type="number" id="stop-loss-price" placeholder="Enter stop-loss price">
+
+            <label for="portfolio-size">Portfolio Size (USD):</label>
+            <input type="number" id="portfolio-size-ps" placeholder="Enter portfolio size">
+
+            <label for="risk-percentage">Risk Percentage (%):</label>
+            <input type="number" id="risk-percentage-ps" placeholder="Enter risk percentage">
+
+            <label for="leverage">Leverage:</label>
+            <input type="number" id="leverage-ps" placeholder="Enter leverage">
+
+            <button onclick="calculatePositionSize()">Calculate Position Size</button>
+        </div>
+
+        <!-- Results Display -->
+        <div id="result">Result: --</div>
     </div>
 
-    <!-- Link to your custom JavaScript file after loading Lightweight Charts library -->
     <script src="script.js"></script>
 </body>
 </html>
