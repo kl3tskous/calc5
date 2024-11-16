@@ -11,7 +11,7 @@
     <div class="container">
         <h1>Crypto Calculator</h1>
 
-        <!-- Switch Calculation Mode -->
+        <!-- Toggle Mode -->
         <div>
             <label><input type="radio" name="calcMode" value="stopLoss" checked onchange="switchMode('stopLoss')"> Calculate Stop Loss</label>
             <label><input type="radio" name="calcMode" value="positionSize" onchange="switchMode('positionSize')"> Calculate Position Size</label>
@@ -34,7 +34,7 @@
         <label><input type="checkbox" id="useCustomEntryPrice" onclick="toggleCustomEntryPrice()"> Use Custom Entry Price</label>
         <input type="number" id="customEntryPrice" placeholder="Enter custom entry price" style="display:none;">
 
-        <!-- Forms -->
+        <!-- Stop-Loss Form -->
         <div id="stopLossForm" class="calculator-form">
             <label for="trade-amount">Amount in Trade (USD):</label>
             <input type="number" id="trade-amount" placeholder="Enter amount">
@@ -57,6 +57,7 @@
             <button onclick="calculateStopLoss()">Calculate Stop-Loss</button>
         </div>
 
+        <!-- Position Size Form -->
         <div id="positionSizeForm" class="calculator-form" style="display:none;">
             <label for="stop-loss-price">Stop-Loss Price (USD):</label>
             <input type="number" id="stop-loss-price" placeholder="Enter stop-loss price">
