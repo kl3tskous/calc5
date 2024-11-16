@@ -10,11 +10,11 @@
 <body>
     <div class="container">
         <h1>Crypto Calculator</h1>
-        
-        <!-- Mode Selection -->
-        <div class="mode-selection">
-            <label><input type="radio" name="mode" value="stopLoss" checked onclick="toggleMode()"> Calculate Stop-Loss</label>
-            <label><input type="radio" name="mode" value="positionSize" onclick="toggleMode()"> Calculate Position Size</label>
+
+        <!-- Switch Calculation Mode -->
+        <div>
+            <label><input type="radio" name="calcMode" value="stopLoss" checked onchange="switchMode('stopLoss')"> Calculate Stop Loss</label>
+            <label><input type="radio" name="calcMode" value="positionSize" onchange="switchMode('positionSize')"> Calculate Position Size</label>
         </div>
 
         <!-- Cryptocurrency Selection -->
@@ -24,18 +24,18 @@
             <button onclick="selectCrypto('solana', 'SOL')">SOL</button>
         </div>
 
-        <!-- Chart Container -->
+        <!-- Chart -->
         <div id="chart-container">
             <div id="chart"></div>
         </div>
 
-        <!-- Entry Price Display -->
+        <!-- Entry Price -->
         <div id="entry-price">Entry Price: --</div>
         <label><input type="checkbox" id="useCustomEntryPrice" onclick="toggleCustomEntryPrice()"> Use Custom Entry Price</label>
         <input type="number" id="customEntryPrice" placeholder="Enter custom entry price" style="display:none;">
 
-        <!-- Stop-Loss Calculator Form -->
-        <div class="calculator-form" id="stopLossForm">
+        <!-- Forms -->
+        <div id="stopLossForm" class="calculator-form">
             <label for="trade-amount">Amount in Trade (USD):</label>
             <input type="number" id="trade-amount" placeholder="Enter amount">
 
@@ -57,27 +57,25 @@
             <button onclick="calculateStopLoss()">Calculate Stop-Loss</button>
         </div>
 
-        <!-- Position Size Calculator Form -->
-        <div class="calculator-form" id="positionSizeForm" style="display:none;">
+        <div id="positionSizeForm" class="calculator-form" style="display:none;">
             <label for="stop-loss-price">Stop-Loss Price (USD):</label>
             <input type="number" id="stop-loss-price" placeholder="Enter stop-loss price">
 
-            <label for="portfolio-size">Portfolio Size (USD):</label>
+            <label for="portfolio-size-ps">Portfolio Size (USD):</label>
             <input type="number" id="portfolio-size-ps" placeholder="Enter portfolio size">
 
-            <label for="risk-percentage">Risk Percentage (%):</label>
+            <label for="risk-percentage-ps">Risk Percentage (%):</label>
             <input type="number" id="risk-percentage-ps" placeholder="Enter risk percentage">
 
-            <label for="leverage">Leverage:</label>
+            <label for="leverage-ps">Leverage:</label>
             <input type="number" id="leverage-ps" placeholder="Enter leverage">
 
             <button onclick="calculatePositionSize()">Calculate Position Size</button>
         </div>
 
-        <!-- Results Display -->
+        <!-- Result -->
         <div id="result">Result: --</div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
