@@ -1,30 +1,17 @@
 let entryPrice = 0;
 let chart, candleSeries, stopLossLineSeries;
 
-// Switch between Stop-Loss and Position Size modes
-function switchMode(mode) {
-    document.getElementById("stopLossForm").style.display = (mode === "stopLoss") ? "block" : "none";
-    document.getElementById("positionSizeForm").style.display = (mode === "positionSize") ? "block" : "none";
-    document.getElementById("result").innerText = "Result: --";
-}
-
-// Select Cryptocurrency and Load Price/Chart
-async function selectCrypto(cryptoId, symbol) {
+// Function to select a cryptocurrency and fetch live price
+async function selectCrypto(symbol) {
     const entryPriceField = document.getElementById("entry-price");
     entryPriceField.innerText = "Fetching...";
 
-    const apiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoId}&vs_currencies=usd`;
-
     try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        const response = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}USDT`);
         const data = await response.json();
 
-        // Ensure we extract the price correctly
-        if (data[cryptoId] && data[cryptoId].usd) {
-            entryPrice = data[cryptoId].usd;
+        if (data && data.price) {
+            entryPrice = parseFloat(data.price);
             entryPriceField.innerText = `Entry Price: $${entryPrice.toFixed(2)} USD`;
             loadCandlestickChart(symbol);
         } else {
@@ -36,40 +23,55 @@ async function selectCrypto(cryptoId, symbol) {
     }
 }
 
-// Load Candlestick Chart
+// Function to toggle custom entry price input
+function toggleCustomEntryPrice() {
+    const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
+    const customEntryInput = document.getElementById("customEntryPrice");
+    const entryPriceDisplay = document.getElementById("entry-price");
+
+    if (useCustomEntry) {
+        customEntryInput.style.display = "block";
+        entryPriceDisplay.style.display = "none";
+    } else {
+        customEntryInput.style.display = "none";
+        entryPriceDisplay.style.display = "block";
+    }
+}
+
+// Function to load the candlestick chart
 async function loadCandlestickChart(symbol) {
     try {
         const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}USDT&interval=15m&limit=50`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
         const data = await response.json();
 
-        const chartData = data.map(c => ({
-            time: c[0] / 1000,
-            open: parseFloat(c[1]),
-            high: parseFloat(c[2]),
-            low: parseFloat(c[3]),
-            close: parseFloat(c[4]),
+        const candlestickData = data.map(candle => ({
+            time: candle[0] / 1000,
+            open: parseFloat(candle[1]),
+            high: parseFloat(candle[2]),
+            low: parseFloat(candle[3]),
+            close: parseFloat(candle[4]),
         }));
 
         if (!chart) {
             chart = LightweightCharts.createChart(document.getElementById("chart"), {
-                width: 350,
+                width: document.getElementById("chart-container").offsetWidth,
                 height: 200,
-                layout: { backgroundColor: "#0d0e13", textColor: "#e0e0e0" },
-                grid: { vertLines: { color: "#2a2a2a" }, horzLines: { color: "#2a2a2a" } },
+                layout: { backgroundColor: '#0d0e13', textColor: '#e0e0e0' },
+                grid: { vertLines: { color: '#2a2a2a' }, horzLines: { color: '#2a2a2a' } },
+                timeScale: { timeVisible: true, borderColor: '#2a2a2a' },
+                priceScale: { borderColor: '#2a2a2a' },
             });
             candleSeries = chart.addCandlestickSeries();
         }
 
-        candleSeries.setData(chartData);
+        candleSeries.setData(candlestickData);
     } catch (error) {
         console.error("Error loading candlestick data:", error);
+        alert("Error loading candlestick data. Please try again.");
     }
 }
 
-// Calculate Stop-Loss
+// Function to calculate stop-loss price for isolated margin mode
 function calculateStopLoss() {
     const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
     const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
@@ -94,6 +96,7 @@ function calculateStopLoss() {
     updateStopLossLine(stopLossPrice);
 }
 
+// Function to update stop-loss line on the chart
 function updateStopLossLine(stopLossPrice) {
     if (chart && candleSeries) {
         if (stopLossLineSeries) {
@@ -109,6 +112,7 @@ function updateStopLossLine(stopLossPrice) {
     }
 }
 
+// Resize chart on window resize
 window.addEventListener("resize", () => {
     if (chart) {
         chart.resize(document.getElementById("chart-container").offsetWidth, 200);
