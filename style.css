@@ -1,4 +1,3 @@
-/* General Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #1a1a2e;
@@ -8,32 +7,28 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    padding: 0 10px;
+    padding: 0;
 }
 
-/* Main Container */
 .container {
-    width: 100%;
     max-width: 400px;
     background-color: #0d0e13;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     text-align: center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
 h1 {
     color: #58a6ff;
-    margin-bottom: 20px;
 }
 
-/* Cryptocurrency Selection Buttons */
 .crypto-selection button {
+    margin: 5px;
+    padding: 10px;
+    border: none;
     background-color: #393e46;
     color: #e0e0e0;
-    border: none;
-    padding: 10px;
-    margin: 5px;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -42,42 +37,33 @@ h1 {
     background-color: #58a6ff;
 }
 
-/* Chart Container */
-#chart-container {
-    margin: 20px 0;
-    width: 100%;
-    overflow: hidden;
-}
-
-/* Form Labels and Inputs */
-.calculator-form label,
-.calculator-form input,
-.calculator-form select {
+.calculator-form input, .calculator-form select {
     display: block;
     width: 100%;
     margin-bottom: 10px;
-}
-
-.calculator-form input,
-.calculator-form select {
     padding: 8px;
-    background-color: #1f2235;
-    color: #e0e0e0;
     border: 1px solid #393e46;
     border-radius: 5px;
+    background-color: #1f2235;
+    color: #e0e0e0;
 }
 
-/* Calculate Button */
 button {
-    background-color: #39d353;
-    color: white;
-    border: none;
+    width: 100%;
     padding: 10px;
+    background-color: #39d353;
+    color: #fff;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 100%;
 }
 
 button:hover {
     background-color: #2b8f3e;
+}
+
+#chart-container {
+    margin: 20px 0;
+    width: 100%;
+    height: 200px;
 }
