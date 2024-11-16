@@ -5,20 +5,20 @@ let chart, candleSeries, stopLossLineSeries;
 async function selectCrypto(symbol) {
     const entryPriceField = document.getElementById("entry-price");
     entryPriceField.innerText = "Fetching...";
-
     try {
         const response = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}USDT`);
+        if (!response.ok) throw new Error("Failed to fetch live price.");
         const data = await response.json();
 
         if (data && data.price) {
             entryPrice = parseFloat(data.price);
             entryPriceField.innerText = `Entry Price: $${entryPrice.toFixed(2)} USD`;
-            loadCandlestickChart(symbol);
+            await loadCandlestickChart(symbol); // Load the candlestick chart
         } else {
-            entryPriceField.innerText = "Price not available";
+            entryPriceField.innerText = "Price not available.";
         }
     } catch (error) {
-        entryPriceField.innerText = "Error fetching price";
+        entryPriceField.innerText = "Error fetching price.";
         console.error("Error fetching live price:", error);
     }
 }
@@ -42,6 +42,7 @@ function toggleCustomEntryPrice() {
 async function loadCandlestickChart(symbol) {
     try {
         const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}USDT&interval=15m&limit=50`);
+        if (!response.ok) throw new Error("Failed to fetch candlestick data.");
         const data = await response.json();
 
         const candlestickData = data.map(candle => ({
@@ -71,7 +72,7 @@ async function loadCandlestickChart(symbol) {
     }
 }
 
-// Function to calculate stop-loss price for isolated margin mode
+// Function to calculate stop-loss price
 function calculateStopLoss() {
     const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
     const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
