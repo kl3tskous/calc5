@@ -2,7 +2,7 @@ let entryPrice = 0;
 let chart, candleSeries, stopLossLineSeries;
 
 // Function to select a cryptocurrency and fetch live price
-async function selectCrypto(symbol) {
+async function selectCrypto(cryptoId, symbol) {
     const entryPriceField = document.getElementById("entry-price");
     entryPriceField.innerText = "Fetching...";
     try {
@@ -10,13 +10,9 @@ async function selectCrypto(symbol) {
         if (!response.ok) throw new Error("Failed to fetch live price.");
         const data = await response.json();
 
-        if (data && data.price) {
-            entryPrice = parseFloat(data.price);
-            entryPriceField.innerText = `Entry Price: $${entryPrice.toFixed(2)} USD`;
-            await loadCandlestickChart(symbol); // Load the candlestick chart
-        } else {
-            entryPriceField.innerText = "Price not available.";
-        }
+        entryPrice = parseFloat(data.price);
+        entryPriceField.innerText = `Entry Price: $${entryPrice.toFixed(2)} USD`;
+        loadCandlestickChart(symbol);
     } catch (error) {
         entryPriceField.innerText = "Error fetching price.";
         console.error("Error fetching live price:", error);
@@ -42,7 +38,6 @@ function toggleCustomEntryPrice() {
 async function loadCandlestickChart(symbol) {
     try {
         const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}USDT&interval=15m&limit=50`);
-        if (!response.ok) throw new Error("Failed to fetch candlestick data.");
         const data = await response.json();
 
         const candlestickData = data.map(candle => ({
@@ -68,7 +63,6 @@ async function loadCandlestickChart(symbol) {
         candleSeries.setData(candlestickData);
     } catch (error) {
         console.error("Error loading candlestick data:", error);
-        alert("Error loading candlestick data. Please try again.");
     }
 }
 
@@ -98,24 +92,4 @@ function calculateStopLoss() {
 }
 
 // Function to update stop-loss line on the chart
-function updateStopLossLine(stopLossPrice) {
-    if (chart && candleSeries) {
-        if (stopLossLineSeries) {
-            chart.removeSeries(stopLossLineSeries);
-        }
-
-        stopLossLineSeries = chart.addLineSeries({ color: 'red', lineWidth: 2 });
-        const visibleRange = chart.timeScale().getVisibleRange();
-        stopLossLineSeries.setData([
-            { time: visibleRange.from, value: stopLossPrice },
-            { time: visibleRange.to, value: stopLossPrice }
-        ]);
-    }
-}
-
-// Resize chart on window resize
-window.addEventListener("resize", () => {
-    if (chart) {
-        chart.resize(document.getElementById("chart-container").offsetWidth, 200);
-    }
-});
+function update
