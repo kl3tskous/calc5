@@ -59,10 +59,14 @@ async function loadCandlestickChart(symbol) {
 
 // Calculate Stop-Loss
 function calculateStopLoss() {
-    // Code for calculating stop-loss...
-}
+    const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
+    const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
+    const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
 
-// Calculate Position Size
-function calculatePositionSize() {
-    // Code for calculating position size...
-}
+    const tradeAmount = parseFloat(document.getElementById("trade-amount").value);
+    const portfolioSize = parseFloat(document.getElementById("portfolio-size").value);
+    const riskPercentage = parseFloat(document.getElementById("risk-percentage").value) / 100;
+    const leverage = parseFloat(document.getElementById("leverage").value);
+    const position = document.getElementById("position-type").value;
+
+    if (isNaN(effectiveEntryPrice) || isNaN(tradeAmount) || isNaN(portfolioSize) || is
