@@ -11,11 +11,10 @@
     <div class="container">
         <h1>Crypto Calculator</h1>
 
-        <!-- Mode Selection -->
-        <div class="mode-selection">
-            <button onclick="switchMode('stopLoss')">Calculate Stop Loss</button>
-            <button onclick="switchMode('marginLeverage')">Calculate Margin & Leverage</button>
-        </div>
+        <!-- Mode Toggle -->
+        <label>
+            <input type="checkbox" id="modeToggle" onchange="switchMode()"> Switch to Margin & Leverage
+        </label>
 
         <!-- Cryptocurrency Selection -->
         <div class="crypto-selection">
