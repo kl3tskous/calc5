@@ -1,125 +1,83 @@
-let entryPrice = 0;
-let chart, candleSeries, stopLossLineSeries;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lightweight-charts@3.5.0/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Crypto Calculator</h1>
 
-// Function to select a cryptocurrency and fetch live price
-async function selectCrypto(cryptoId, symbol) {
-    const entryPriceField = document.getElementById("entry-price");
-    entryPriceField.innerText = "Fetching...";
+        <!-- Mode Selection -->
+        <div class="mode-selection">
+            <button onclick="switchMode('stopLoss')">Calculate Stop Loss</button>
+            <button onclick="switchMode('marginLeverage')">Calculate Margin & Leverage</button>
+        </div>
 
-    const proxyUrl = "https://corsproxy.io/?";
-    const apiUrl = `https://api.binance.com/api/v3/ticker/price?symbol=${symbol}USDT`;
-    const url = `${proxyUrl}${encodeURIComponent(apiUrl)}`;
+        <!-- Cryptocurrency Selection -->
+        <div class="crypto-selection">
+            <button onclick="selectCrypto('bitcoin', 'BTC')">BTC</button>
+            <button onclick="selectCrypto('ethereum', 'ETH')">ETH</button>
+            <button onclick="selectCrypto('solana', 'SOL')">SOL</button>
+        </div>
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch live price.");
-        const data = await response.json();
+        <!-- Chart Container -->
+        <div id="chart-container">
+            <div id="chart"></div>
+        </div>
 
-        entryPrice = parseFloat(data.price);
-        entryPriceField.innerText = `Entry Price: $${entryPrice.toFixed(2)} USD`;
-        loadCandlestickChart(symbol);
-    } catch (error) {
-        entryPriceField.innerText = "Error fetching price.";
-        console.error("Error fetching live price:", error);
-    }
-}
+        <!-- Entry Price Display -->
+        <div id="entry-price">Entry Price: --</div>
+        <label><input type="checkbox" id="useCustomEntryPrice" onclick="toggleCustomEntryPrice()"> Use Custom Entry Price</label>
+        <input type="number" id="customEntryPrice" placeholder="Enter custom entry price" style="display:none;">
 
-// Function to toggle custom entry price input
-function toggleCustomEntryPrice() {
-    const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
-    const customEntryInput = document.getElementById("customEntryPrice");
-    const entryPriceDisplay = document.getElementById("entry-price");
+        <!-- Calculator Form -->
+        <div class="calculator-form" id="stopLossMode">
+            <label for="trade-amount">Amount in Trade (USD):</label>
+            <input type="number" id="trade-amount" placeholder="Enter amount">
 
-    if (useCustomEntry) {
-        customEntryInput.style.display = "block";
-        entryPriceDisplay.style.display = "none";
-    } else {
-        customEntryInput.style.display = "none";
-        entryPriceDisplay.style.display = "block";
-    }
-}
+            <label for="portfolio-size">Portfolio Size (USD):</label>
+            <input type="number" id="portfolio-size" placeholder="Enter portfolio size">
 
-// Function to load the candlestick chart
-async function loadCandlestickChart(symbol) {
-    try {
-        const proxyUrl = "https://corsproxy.io/?";
-        const apiUrl = `https://api.binance.com/api/v3/klines?symbol=${symbol}USDT&interval=15m&limit=50`;
-        const url = `${proxyUrl}${encodeURIComponent(apiUrl)}`;
+            <label for="risk-percentage">Risk Percentage (%):</label>
+            <input type="number" id="risk-percentage" placeholder="Enter risk percentage">
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch candlestick data.");
-        const data = await response.json();
+            <label for="leverage">Leverage:</label>
+            <input type="number" id="leverage" placeholder="Enter leverage">
 
-        const candlestickData = data.map(candle => ({
-            time: candle[0] / 1000,
-            open: parseFloat(candle[1]),
-            high: parseFloat(candle[2]),
-            low: parseFloat(candle[3]),
-            close: parseFloat(candle[4]),
-        }));
+            <label for="position-type">Position Type:</label>
+            <select id="position-type">
+                <option value="long">Long</option>
+                <option value="short">Short</option>
+            </select>
 
-        if (!chart) {
-            chart = LightweightCharts.createChart(document.getElementById("chart"), {
-                width: document.getElementById("chart-container").offsetWidth,
-                height: 200,
-                layout: { backgroundColor: '#0d0e13', textColor: '#e0e0e0' },
-                grid: { vertLines: { color: '#2a2a2a' }, horzLines: { color: '#2a2a2a' } },
-                timeScale: { timeVisible: true, borderColor: '#2a2a2a' },
-                priceScale: { borderColor: '#2a2a2a' },
-            });
-            candleSeries = chart.addCandlestickSeries();
-        }
+            <button onclick="calculateStopLoss()">Calculate Stop-Loss</button>
+        </div>
 
-        candleSeries.setData(candlestickData);
-    } catch (error) {
-        console.error("Error loading candlestick data:", error);
-        alert("Error loading candlestick data. Please try again.");
-    }
-}
+        <div class="calculator-form" id="marginLeverageMode" style="display: none;">
+            <label for="stop-loss-price">Stop Loss Price (USD):</label>
+            <input type="number" id="stop-loss-price" placeholder="Enter stop loss price">
 
-// Function to calculate stop-loss price
-function calculateStopLoss() {
-    const useCustomEntry = document.getElementById("useCustomEntryPrice").checked;
-    const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
-    const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
+            <label for="portfolio-size-ml">Portfolio Size (USD):</label>
+            <input type="number" id="portfolio-size-ml" placeholder="Enter portfolio size">
 
-    const tradeAmount = parseFloat(document.getElementById("trade-amount")?.value);
-    const portfolioSize = parseFloat(document.getElementById("portfolio-size")?.value);
-    const riskPercentage = parseFloat(document.getElementById("risk-percentage")?.value) / 100;
-    const leverage = parseFloat(document.getElementById("leverage")?.value);
-    const position = document.getElementById("position-type").value;
+            <label for="risk-percentage-ml">Risk Percentage (%):</label>
+            <input type="number" id="risk-percentage-ml" placeholder="Enter risk percentage">
 
-    if (isNaN(effectiveEntryPrice) || isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage)) {
-        alert("Please fill in all fields correctly.");
-        return;
-    }
+            <label for="fixed-leverage">Fixed Leverage (Optional):</label>
+            <input type="number" id="fixed-leverage" placeholder="Enter leverage (optional)">
 
-    const dollarRisk = portfolioSize * riskPercentage;
-    const priceMovement = (dollarRisk / (tradeAmount / effectiveEntryPrice)) / leverage;
-    const stopLossPrice = (position === "long") ? effectiveEntryPrice - priceMovement : effectiveEntryPrice + priceMovement;
+            <button onclick="calculateMarginLeverage()">Calculate Margin & Leverage</button>
+        </div>
 
-    document.getElementById("stop-loss-result").innerText = `Stop-Loss Price: $${stopLossPrice.toFixed(2)}`;
-    updateStopLossLine(stopLossPrice);
-}
+        <!-- Results -->
+        <div id="stop-loss-result">Stop-Loss Price: --</div>
+        <div id="margin-leverage-result" style="display: none;">Margin & Leverage: --</div>
+    </div>
 
-// Function to update stop-loss line on the chart
-function updateStopLossLine(stopLossPrice) {
-    if (chart && candleSeries) {
-        if (stopLossLineSeries) {
-            chart.removeSeries(stopLossLineSeries);
-        }
-
-        stopLossLineSeries = chart.addLineSeries({ color: 'red', lineWidth: 2 });
-        const visibleRange = chart.timeScale().getVisibleRange();
-        stopLossLineSeries.setData([
-            { time: visibleRange.from, value: stopLossPrice },
-            { time: visibleRange.to, value: stopLossPrice }
-        ]);
-    }
-}
-
-window.addEventListener("resize", () => {
-    if (chart) {
-        chart.resize(document.getElementById("chart-container").offsetWidth, 200);
-    }
-});
+    <script src="script.js"></script>
+</body>
+</html>
