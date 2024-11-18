@@ -2,22 +2,23 @@ let entryPrice = 0;
 let chart, candleSeries, stopLossLineSeries;
 
 // Function to switch between modes
-function switchMode(mode) {
+function switchMode() {
+    const isMarginMode = document.getElementById("modeToggle").checked;
     const stopLossMode = document.getElementById("stopLossMode");
     const marginLeverageMode = document.getElementById("marginLeverageMode");
     const stopLossResult = document.getElementById("stop-loss-result");
     const marginLeverageResult = document.getElementById("margin-leverage-result");
 
-    if (mode === "stopLoss") {
-        stopLossMode.style.display = "block";
-        marginLeverageMode.style.display = "none";
-        stopLossResult.style.display = "block";
-        marginLeverageResult.style.display = "none";
-    } else if (mode === "marginLeverage") {
+    if (isMarginMode) {
         stopLossMode.style.display = "none";
         marginLeverageMode.style.display = "block";
         stopLossResult.style.display = "none";
         marginLeverageResult.style.display = "block";
+    } else {
+        stopLossMode.style.display = "block";
+        marginLeverageMode.style.display = "none";
+        stopLossResult.style.display = "block";
+        marginLeverageResult.style.display = "none";
     }
 }
 
@@ -50,10 +51,10 @@ function calculateStopLoss() {
     const customEntryPrice = parseFloat(document.getElementById("customEntryPrice").value);
     const effectiveEntryPrice = useCustomEntry && !isNaN(customEntryPrice) ? customEntryPrice : entryPrice;
 
-    const tradeAmount = parseFloat(document.getElementById("trade-amount")?.value);
-    const portfolioSize = parseFloat(document.getElementById("portfolio-size")?.value);
-    const riskPercentage = parseFloat(document.getElementById("risk-percentage")?.value) / 100;
-    const leverage = parseFloat(document.getElementById("leverage")?.value);
+    const tradeAmount = parseFloat(document.getElementById("trade-amount").value);
+    const portfolioSize = parseFloat(document.getElementById("portfolio-size").value);
+    const riskPercentage = parseFloat(document.getElementById("risk-percentage").value) / 100;
+    const leverage = parseFloat(document.getElementById("leverage").value);
     const position = document.getElementById("position-type").value;
 
     if (isNaN(effectiveEntryPrice) || isNaN(tradeAmount) || isNaN(portfolioSize) || isNaN(riskPercentage) || isNaN(leverage)) {
